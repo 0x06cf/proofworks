@@ -144,7 +144,11 @@ const OPENAPI = `{
 }
 `;
 
-// Handler for static agent files.
+// IndexNow: host-verification key file. IndexNow requires this exact path be
+// served at the domain root for fast Bing/Yandex/Seznam/Naver indexing.
+const INDEXNOW_KEY = '9d6f8adf211b4d37b3922bf438acdd01';
+
+// Handler for static agent / indexing files.
 export async function handleAgentStatic(url: URL): Promise<Response | null> {
   const p = url.pathname;
   let body: string | null = null;
@@ -155,6 +159,8 @@ export async function handleAgentStatic(url: URL): Promise<Response | null> {
   else if (p === '/openapi.json') { body = OPENAPI; type = 'application/json; charset=utf-8'; }
   else if (p === '/.well-known/llms.txt') body = LLMS;
   else if (p === '/.well-known/ai-access') { body = WELLKNOWN_DOT; type = 'application/json; charset=utf-8'; }
+  // IndexNow key file (host-level verification): /<key>.txt and /key.txt mirror
+  else if (p === `/${INDEXNOW_KEY}.txt` || p === '/key.txt') body = INDEXNOW_KEY;
   else return null;
   return new Response(body, { status: 200, headers: {
     'Content-Type': type,

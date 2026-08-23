@@ -15,6 +15,22 @@ const PAGE = `<!DOCTYPE html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Proofworks - paste an AI answer and its sources, then verify each claim in plain view. Human-reviewed, no LLM in the judgment loop.">
+<link rel="canonical" href="https://sentrylab.app/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://sentrylab.app/">
+<meta property="og:title" content="Proofworks — verify what AI told you">
+<meta property="og:description" content="Paste an AI answer and its sources. Break it into claims, check each against the source, and mark what's true. Human-verified, open ledger.">
+<meta name="twitter:card" content="summary">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Proofworks",
+  "url": "https://sentrylab.app/",
+  "description": "Human-verified AI claim checker",
+  "publisher": { "@type": "Organization", "name": "Proofworks" }
+}
+</script>
 <title>Proofworks — verify what AI told you</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
