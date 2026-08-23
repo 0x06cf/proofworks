@@ -69,12 +69,14 @@ Disallow: /
 Sitemap: ${AGENT_BASE}/sitemap.xml
 `;
 
-// --- sitemap.xml ------------------------------------------------------------
+// --- Sitemap --------------------------------------------------------------
+// NOTE: sitemap <loc> entries must be real, unique URLs with NO fragments (#).
+// Fragment URLs are invalid in sitemaps and cause Google to reject the file as
+// "Invalid sitemap address". The site is a single-page app, so we list the
+// homepage only (plus the static agent/indexing files that are worth indexing).
 const SITEMAP = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://${AGENT_HOST}/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
-  <url><loc>https://${AGENT_HOST}/#checker</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://${AGENT_HOST}/#corpus-sec</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
 </urlset>`;
 
 // --- llms.txt (AI content-signal / "give agents a map") --------------------
@@ -144,9 +146,14 @@ const OPENAPI = `{
 }
 `;
 
-// IndexNow: host-verification key file. IndexNow requires this exact path be
-// served at the domain root for fast Bing/Yandex/Seznam/Naver indexing.
-const INDEXNOW_KEY = '9d6f8adf211b4d37b3922bf438acdd01';
+// IndexNow: host-verification key files. IndexNow requires these exact paths be
+// served at the domain root for fast Bing/Yandex/Seznam/Naver indexing. We keep
+// both the key used for the initial bulk submission AND the key generated from
+// the Bing Webmaster Tools portal (which also acts as the account-linked key).
+const INDEXNOW_KEYS = [
+  '9d6f8adf211b4d37b3922bf438acdd01', // bulk submission key
+  '4b1b6e78ffcd4b9497e591fe14d50d04', // key generated from Bing Webmaster Tools portal
+];
 
 // Handler for static agent / indexing files.
 export async function handleAgentStatic(url: URL): Promise<Response | null> {
@@ -159,8 +166,11 @@ export async function handleAgentStatic(url: URL): Promise<Response | null> {
   else if (p === '/openapi.json') { body = OPENAPI; type = 'application/json; charset=utf-8'; }
   else if (p === '/.well-known/llms.txt') body = LLMS;
   else if (p === '/.well-known/ai-access') { body = WELLKNOWN_DOT; type = 'application/json; charset=utf-8'; }
-  // IndexNow key file (host-level verification): /<key>.txt and /key.txt mirror
-  else if (p === `/${INDEXNOW_KEY}.txt` || p === '/key.txt') body = INDEXNOW_KEY;
+  // IndexNow key files (host-level verification): /<key>.txt and /key.txt mirror
+  else if (INDEXNOW_KEYS.includes(p.slice(1, -4)) || p === '/key.txt') {
+    const fileKey = p.slice(1, -4);
+    body = INDEXNOW_KEYS.includes(fileKey) ? fileKey : INDEXNOW_KEYS[0];
+  }
   else return null;
   return new Response(body, { status: 200, headers: {
     'Content-Type': type,
