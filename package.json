@@ -4,7 +4,8 @@
   "description": "Human-verified AI claim checker with public API + MCP surface (Cloudflare Workers)",
   "type": "module",
   "scripts": {
-    "dev": "wrangler dev",
+    "start": "wrangler dev --local --port 8000",
+    "dev": "wrangler dev --local --port 8787",
     "typecheck": "tsc --noEmit",
     "deploy": "wrangler deploy",
     "db:migrate": "wrangler d1 migrations apply proofworks-db",
