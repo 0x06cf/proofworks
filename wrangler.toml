@@ -1,0 +1,31 @@
+name = "proofworks"
+main = "src/index.ts"
+compatibility_date = "2026-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+# --- Account ---
+account_id = "371417ef0a0d31f57f849975c0cf68f9"
+
+# --- Routes (custom domain) ---
+routes = [
+  { pattern = "sentrylab.app", custom_domain = true }
+]
+
+# --- dev subdomain (live URL before domain DNS is wired) ---
+workers_dev = true
+
+# --- Observability ---
+[observability]
+enabled = true
+
+# --- KV (cache) ---
+[[kv_namespaces]]
+binding = "CACHE_KV"
+id = "2644f6e9e89c44acb6e0c4370e9d5fb3"
+
+# --- D1 (database) ---
+[[d1_databases]]
+binding = "DB"
+database_name = "proofworks-db"
+database_id = "d164507a-1582-4b38-9ba4-8b78c9c62cff"
+migrations_dir = "migrations"
