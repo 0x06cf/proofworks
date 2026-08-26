@@ -73,11 +73,13 @@ Sitemap: ${AGENT_BASE}/sitemap.xml
 `;
 
 // --- Sitemap --------------------------------------------------------------
-// <loc> entries must be real, unique URLs with NO fragments (#). The site is a
-// single landing page, so we list the homepage only.
+// Real, unique, crawlable URLs with NO fragments (#). Meta-files (robots.txt,
+// sitemap.xml, .well-known/*, ai-access) are infrastructure and are excluded.
 const SITEMAP = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://${AGENT_HOST}/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://${AGENT_HOST}/</loc><changefreq>weekly</changefreq><priority>1.0</priority><lastmod>2026-08-26</lastmod></url>
+  <url><loc>https://${AGENT_HOST}/agent-setup/prompt.md</loc><changefreq>monthly</changefreq><priority>0.9</priority><lastmod>2026-08-26</lastmod></url>
+  <url><loc>https://${AGENT_HOST}/llms.txt</loc><changefreq>monthly</changefreq><priority>0.8</priority><lastmod>2026-08-26</lastmod></url>
 </urlset>`;
 
 // --- llms.txt (AI content-signal / "give agents a map") --------------------
