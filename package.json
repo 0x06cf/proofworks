@@ -1,7 +1,8 @@
 {
   "name": "proofworks",
   "version": "0.1.0",
-  "description": "Human-verified AI claim checker with public API + MCP surface (Cloudflare Workers)",
+  "description": "A research skill that verifies its own citations - self-contained, runs locally in any agent.",
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "start": "wrangler dev --local --port 8000",
