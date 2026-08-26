@@ -11,6 +11,8 @@
 //   /robots.txt, /sitemap.xml, IndexNow key files -> indexing support
 // No API. No MCP. No auth. Pure static content + the skill.
 
+import { OG_IMAGE_PNG } from './og-image';
+
 export const AGENT_HOST = 'sentrylab.app';
 export const AGENT_BASE = `https://${AGENT_HOST}`;
 const REPO = '0x06cf/proofworks';
@@ -179,6 +181,18 @@ const INDEXNOW_KEYS = [
 // Handler for static agent / indexing files.
 export async function handleAgentStatic(url: URL): Promise<Response | null> {
   const p = url.pathname;
+  // OpenGraph social card (binary PNG): decode the embedded base64 data URI.
+  if (p === '/og-image.png') {
+    const b64 = OG_IMAGE_PNG.split(',')[1] ?? '';
+    const bytes = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
+    return new Response(bytes, {
+      status: 200,
+      headers: {
+        'Content-Type': 'image/png',
+        'Cache-Control': 'public, max-age=86400',
+      },
+    });
+  }
   let body: string | null = null;
   let type = 'text/plain; charset=utf-8';
   if (p === '/robots.txt') body = ROBOTS;

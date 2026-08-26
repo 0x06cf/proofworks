@@ -17,9 +17,18 @@ const LANDING = `<!doctype html>
 <link rel="canonical" href="${ORIGIN}/">
 <meta property="og:type" content="website">
 <meta property="og:url" content="${ORIGIN}/">
-<meta property="og:title" content="Proofworks — let your agent prove it">
-<meta property="og:description" content="A research skill for AI agents that verifies its own citations. verified · unsupported · unverifiable. Never a fake yes.">
-<title>Proofworks — let your agent prove it</title>
+<meta property="og:title" content="Give your agent a proofreader for its citations">
+<meta property="og:description" content="Proofworks — a research skill for AI agents that verifies its own citations. verified · unsupported · unverifiable. Never a fake yes.">
+<meta property="og:image" content="${ORIGIN}/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:type" content="image/png">
+<meta property="og:site_name" content="Proofworks">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Give your agent a proofreader for its citations">
+<meta name="twitter:description" content="Proofworks — a research skill for AI agents that verifies its own citations. verified · unsupported · unverifiable. Never a fake yes.">
+<meta name="twitter:image" content="${ORIGIN}/og-image.png">
+<title>Proofworks — give your agent a proofreader for its citations</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
