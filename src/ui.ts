@@ -469,7 +469,7 @@ BODY  <span class="st" style="color:#85d39d">{"claim": "Jan 1 2027 is a Monday"}
   <p>Paste the setup prompt into any agent chat. It connects itself, then starts verifying.</p>
   <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;position:relative;z-index:2">
     <a class="btn" href="${ORIGIN}/agent-setup/prompt.md">Read the setup prompt</a>
-    <a class="btn ghost" href="https://github.com/wgbebrbrbrb/proofworks" target="_blank" rel="noopener">View the repo</a>
+    <a class="btn ghost" href="https://github.com/0x06cf/proofworks" target="_blank" rel="noopener">View the repo</a>
   </div>
   <pre>&lt;paste this into your agent&gt;<br>Fetch and execute the setup instructions for the<br>Proofworks MCP server from @url:\`${ORIGIN}/agent-setup/prompt.md\`</pre>
   <div class="status"><span class="dot"></span>all systems online&nbsp;·&nbsp;no auth&nbsp;·&nbsp;SOC&#8209;2 ready on request</div>
@@ -496,7 +496,7 @@ BODY  <span class="st" style="color:#85d39d">{"claim": "Jan 1 2027 is a Monday"}
     </div>
     <div>
       <h4>Meta</h4>
-      <ul><li><a href="https://github.com/wgbebrbrbrb/proofworks" target="_blank" rel="noopener">GitHub</a></li><li><a href="#">Stay in the loop</a></li></ul>
+      <ul><li><a href="https://github.com/0x06cf/proofworks" target="_blank" rel="noopener">GitHub</a></li><li><a href="#">Stay in the loop</a></li></ul>
     </div>
   </div>
   <div class="foot-bottom">
