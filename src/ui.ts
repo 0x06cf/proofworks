@@ -187,6 +187,20 @@ pre.code .fn{color:#f0a0a0}
 .principle .codecol{background:#0b0d10;border-radius:14px;overflow:hidden;box-shadow:0 24px 70px -40px rgba(0,0,0,.55)}
 .principle .codecol pre{color:#d4dbe3;font-size:13px;line-height:1.7;padding:22px 20px;overflow-x:auto}
 
+/* ---------- resources ---------- */
+.res{background:#fafafa;border-top:1px solid var(--line)}
+.res .kicker{justify-content:center;margin-bottom:10px}
+.res h2{text-align:center}
+.res-sub{text-align:center;color:var(--ink2);max-width:560px;margin:14px auto 0;font-size:15px;line-height:1.6}
+.res-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;max-width:980px;margin:36px auto 0}
+.res-card{display:flex;flex-direction:column;gap:8px;background:#fff;border-radius:12px;padding:20px;box-shadow:var(--ring) 0 0 0 1px;transition:box-shadow .15s}
+.res-card:hover{box-shadow:0 4px 20px -10px rgba(0,0,0,.25)}
+.res-card .rt{font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.08em;color:var(--source);text-transform:uppercase}
+.res-card h3{font-size:16px;font-weight:600}
+.res-card p{font-size:13.5px;color:var(--ink2);line-height:1.5;flex:1}
+.res-card .mono{font-family:'Geist Mono',monospace;font-size:12px;color:var(--ink3)}
+@media(max-width:640px){.res-grid{grid-template-columns:1fr}}
+
 /* ---------- FAQ ---------- */
 .faq{max-width:720px;margin:0 auto}
 .faq details{border-bottom:1px solid var(--line);padding:4px 0}
@@ -204,6 +218,12 @@ pre.code .fn{color:#f0a0a0}
 .cta-band .btn.ghost{background:transparent;color:#fff;box-shadow:0 0 0 1px #2a313a}
 .cta-band .btn.ghost:hover{background:#151a20}
 .cta-band pre{max-width:560px;margin:0 auto;text-align:left;background:#0f1216;border:1px solid #1f262e;border-radius:10px;padding:14px 16px;font-size:12.5px;color:#a4adb8;line-height:1.6;overflow-x:auto}
+.paste-box{max-width:560px;margin:18px auto 0;text-align:left;border-radius:10px;overflow:hidden;box-shadow:0 12px 40px -24px rgba(0,0,0,.6)}
+.paste-bar{display:flex;align-items:center;justify-content:space-between;background:#14181d;border:1px solid #1f262e;border-bottom:none;padding:9px 12px;border-radius:10px 10px 0 0}
+.paste-bar span{font-family:'Geist Mono',monospace;font-size:11.5px;color:#8f99a4}
+.paste-bar button{background:#1e242b;color:#c9d1d9;border:1px solid #2a313a;font-size:11.5px;font-family:'Geist Mono',monospace;border-radius:6px;padding:4px 10px;cursor:pointer}
+.paste-bar button:hover{background:#262d36;color:#fff}
+.paste-box pre{margin:0;border-radius:0 0 10px 10px;border-top:none;max-width:none}
 .cta-band .status{margin-top:26px;font-family:'Geist Mono',monospace;font-size:12.5px;color:#8f99a4;display:flex;justify-content:center;gap:8px;align-items:center;flex-wrap:wrap}
 .cta-band .status .dot{width:7px;height:7px;border-radius:50%;background:var(--certain);display:inline-block;margin-right:4px}
 footer{padding:60px 0 40px;background:#fff;border-top:1px solid var(--line)}
@@ -251,10 +271,10 @@ footer a:hover{color:var(--ink)}
       <a href="#numbers">Numbers</a>
       <a href="#use-cases">Use cases</a>
       <a href="#faq">FAQ</a>
-      <a href="${ORIGIN}/llms.txt">Resources</a>
+      <a href="#resources">Resources</a>
     </div>
     <div class="nav-cta">
-      <a class="btn ghost" href="${ORIGIN}/openapi.json">Docs</a>
+      <a class="btn ghost" href="#resources">Docs</a>
       <a class="btn" href="#install">Onboard an agent</a>
     </div>
   </div>
@@ -463,6 +483,47 @@ BODY  <span class="st" style="color:#85d39d">{"claim": "Jan 1 2027 is a Monday"}
   </div>
 </section>
 
+<!-- Resources (agent + machine files, presented readably) -->
+<section class="res" id="resources">
+  <div class="container">
+    <div class="kicker">Resources</div>
+    <h2 class="serif">Agent files and specs</h2>
+    <p class="res-sub">These <b>machine formats</b> are for agents and scripts, not human reading, so each opens as raw text or JSON. Below is what each one is for.</p>
+    <div class="res-grid">
+      <a class="res-card" href="${ORIGIN}/agent-setup/prompt.md">
+        <div class="rt">SETUP</div><h3>Setup prompt</h3>
+        <p>Self-install instructions an agent follows to connect to the MCP server. Markdown.</p>
+        <span class="mono">/agent-setup/prompt.md</span>
+      </a>
+      <a class="res-card" href="${ORIGIN}/llms.txt">
+        <div class="rt">LLMS</div><h3>llms.txt</h3>
+        <p>AI content signal; a map of the API for agent crawlers. Plain text.</p>
+        <span class="mono">/llms.txt</span>
+      </a>
+      <a class="res-card" href="${ORIGIN}/openapi.json">
+        <div class="rt">API</div><h3>OpenAPI spec</h3>
+        <p>Machine-readable description of every REST endpoint. JSON.</p>
+        <span class="mono">/openapi.json</span>
+      </a>
+      <a class="res-card" href="${ORIGIN}/mcp.json">
+        <div class="rt">MCP</div><h3>MCP server manifest</h3>
+        <p>Server metadata + the tool list for MCP-aware clients. JSON.</p>
+        <span class="mono">/mcp.json</span>
+      </a>
+      <a class="res-card" href="${ORIGIN}/robots.txt">
+        <div class="rt">SPEC</div><h3>robots.txt</h3>
+        <p>Crawler policy: what indexers may read and cite. Plain text.</p>
+        <span class="mono">/robots.txt</span>
+      </a>
+      <a class="res-card" href="https://github.com/0x06cf/proofworks" target="_blank" rel="noopener">
+        <div class="rt">CODE</div><h3>Source</h3>
+        <p>The whole thing is open source. Self-host it if you want.</p>
+        <span class="mono">github.com/0x06cf/proofworks</span>
+      </a>
+    </div>
+  </div>
+</section>
+
 <!-- CTA -->
 <section class="cta-band" id="install">
   <h2>Give your agent a referee.</h2>
@@ -471,7 +532,13 @@ BODY  <span class="st" style="color:#85d39d">{"claim": "Jan 1 2027 is a Monday"}
     <a class="btn" href="${ORIGIN}/agent-setup/prompt.md">Read the setup prompt</a>
     <a class="btn ghost" href="https://github.com/0x06cf/proofworks" target="_blank" rel="noopener">View the repo</a>
   </div>
-  <pre>&lt;paste this into your agent&gt;<br>Fetch and execute the setup instructions for the<br>Proofworks MCP server from @url:\`${ORIGIN}/agent-setup/prompt.md\`</pre>
+  <div class="paste-box">
+    <div class="paste-bar">
+      <span>&lt;paste this into your agent&gt;</span>
+      <button id="copyPrompt">Copy</button>
+    </div>
+    <pre>Fetch and execute the setup instructions for the<br>Proofworks MCP server from @url:\`${ORIGIN}/agent-setup/prompt.md\`</pre>
+  </div>
   <div class="status"><span class="dot"></span>all systems online&nbsp;·&nbsp;no auth&nbsp;·&nbsp;SOC&#8209;2 ready on request</div>
 </section>
 
@@ -512,17 +579,17 @@ BODY  <span class="st" style="color:#85d39d">{"claim": "Jan 1 2027 is a Monday"}
   // ---- agent install snippets ----
   var installs={
     claude:{name:'claude code',code:
-'# Install via MCP (HTTP)\nclaude mcp add --transport http proofworks ${ORIGIN}/mcp\n'+
-'# Restart Claude Code, then: "verify 15% of 1200"\n'},
+'# Install via MCP (HTTP)\\nclaude mcp add --transport http proofworks ${ORIGIN}/mcp\\n'+
+'# Restart Claude Code, then: "verify 15% of 1200"\\n'},
     codex:{name:'codex',code:
-'# Add the server once\ncodex mcp add proofworks --url ${ORIGIN}/mcp\n'+
-'# Then in a session: claim_check is available automatically\n'},
+'# Add the server once\\ncodex mcp add proofworks --url ${ORIGIN}/mcp\\n'+
+'# Then in a session: claim_check is available automatically\\n'},
     opencode:{name:'opencode',code:
-'// ~/.config/opencode/opencode.jsonc  →  "mcp": {\n"proofworks": {\n  "type": "remote",\n  "url": "${ORIGIN}/mcp",\n  "enabled": true\n}\n// }'},
+'// ~/.config/opencode/opencode.jsonc  →  "mcp": {\\n"proofworks": {\\n  "type": "remote",\\n  "url": "${ORIGIN}/mcp",\\n  "enabled": true\\n}\\n// }'},
     windsurf:{name:'windsurf',code:
-'// ~/.codeium/windsurf/mcp_config.json  →  "mcpServers": {\n"proofworks": {\n  "serverUrl": "${ORIGIN}/mcp"\n}\n// }'},
+'// ~/.codeium/windsurf/mcp_config.json  →  "mcpServers": {\\n"proofworks": {\\n  "serverUrl": "${ORIGIN}/mcp"\\n}\\n// }'},
     cursor:{name:'cursor',code:
-'// .cursor/mcp.json  →  "mcpServers": {\n"proofworks": {\n  "url": "${ORIGIN}/mcp"\n}\n// }'}
+'// .cursor/mcp.json  →  "mcpServers": {\\n"proofworks": {\\n  "url": "${ORIGIN}/mcp"\\n}\\n// }'}
   };
 
   var cur='claude';
@@ -588,6 +655,15 @@ BODY  <span class="st" style="color:#85d39d">{"claim": "Jan 1 2027 is a Monday"}
   }
   demoBtn.addEventListener('click',function(){runDemo(function(){spin.style.display='none';demoBtn.disabled=false;});});
   demoIn.addEventListener('keydown',function(e){if((e.key==='Enter'&&e.metaKey)||(e.key==='Enter'&&e.ctrlKey)){demoBtn.click();}});
+
+  // ---- CTA copy-paste prompt ----
+  var cpBtn=document.getElementById('copyPrompt');
+  if(cpBtn)cpBtn.addEventListener('click',function(){
+    var txt=document.querySelector('.paste-box pre').innerText.replace(/\\n\\s*/g,' ').trim();
+    navigator.clipboard.writeText(txt).then(function(){
+      var b=this; b.textContent='Copied ✓'; setTimeout(function(){b.textContent='Copy';},1200);
+    }.bind(this)).catch(function(){});
+  });
 
   // run once on load if text present
   if(demoIn.value.trim()){runDemo(function(){spin.style.display='none';demoBtn.disabled=false;});}
