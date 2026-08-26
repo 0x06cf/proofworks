@@ -220,14 +220,12 @@ pre.code .fn{color:#f0a0a0}
 .cta-band .status{margin-top:26px;font-family:'Geist Mono',monospace;font-size:12.5px;color:#8f99a4;display:flex;justify-content:center;gap:8px;align-items:center;flex-wrap:wrap}
 .cta-band .status .dot{width:7px;height:7px;border-radius:50%;background:var(--certain);display:inline-block;margin-right:4px}
 footer{padding:60px 0 40px;background:#fff;border-top:1px solid var(--line)}
-.foot-grid{max-width:1120px;margin:0 auto;padding:0 24px;display:grid;grid-template-columns:1.6fr repeat(4,1fr);gap:32px}
+.foot-grid{max-width:1120px;margin:0 auto;padding:0 24px;display:grid;grid-template-columns:repeat(4,1fr);gap:32px}
 footer h4{font-size:13px;font-weight:600;letter-spacing:.02em;margin-bottom:14px}
 footer ul{list-style:none}
 footer li{margin-bottom:10px}
 footer a{color:var(--ink2);font-size:14px}
 footer a:hover{color:var(--ink)}
-.foot-brand .brand{margin-bottom:12px}
-.foot-brand p{color:var(--ink3);font-size:13.5px;max-width:240px;line-height:1.55}
 .foot-bottom{max-width:1120px;margin:26px auto 0;padding:20px 24px 0;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;color:var(--ink3);font-size:13px}
 .foot-bottom .legal{display:flex;gap:20px}
 .foot-bottom a{color:var(--ink3);font-size:13px}
@@ -526,10 +524,6 @@ BODY  <span class="st" style="color:#85d39d">{"claim": "Jan 1 2027 is a Monday",
 <!-- FOOTER -->
 <footer>
   <div class="foot-grid">
-    <div class="foot-brand">
-      <a class="brand" href="${ORIGIN}/"><span class="mark">✓</span>Proofworks</a>
-      <p>A research skill your agent uses to verify its own citations. Let it prove the sources before you trust the answer.</p>
-    </div>
     <div>
       <h4>Product</h4>
       <ul><li><a href="${ORIGIN}/agent-setup/prompt.md">Setup prompt</a></li><li><a href="#offer">The ladder</a></li><li><a href="#demo">Demo</a></li><li><a href="${ORIGIN}/llms.txt">llms.txt</a></li></ul>
@@ -544,12 +538,12 @@ BODY  <span class="st" style="color:#85d39d">{"claim": "Jan 1 2027 is a Monday",
     </div>
     <div>
       <h4>Meta</h4>
-      <ul><li><a href="https://github.com/0x06cf/proofworks" target="_blank" rel="noopener">GitHub</a></li><li><a href="#">Stay in the loop</a></li></ul>
+      <ul><li><a href="${ORIGIN}/agent-setup/prompt.md">Setup prompt</a></li><li><a href="https://github.com/0x06cf/proofworks" target="_blank" rel="noopener">GitHub</a></li><li><a href="${ORIGIN}/llms.txt">llms.txt</a></li></ul>
     </div>
   </div>
   <div class="foot-bottom">
-    <span>© 2026 Proofworks. All rights reserved.</span>
-    <div class="legal"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Status</a></div>
+    <span>© 2026 <b>Proofworks</b>. A research skill that verifies its own citations.</span>
+    <div class="legal"><a href="#offer">About</a><a href="#faq">FAQ</a><a href="https://github.com/0x06cf/proofworks" target="_blank" rel="noopener">GitHub</a></div>
   </div>
 </footer>
 
