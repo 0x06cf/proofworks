@@ -235,7 +235,7 @@ footer a:hover{color:var(--ink)}
 <body>
 
 <!-- announcement top bar -->
-<div class="topbar"><div class="topbar-inner"><span class="dot"></span>Proofworks is a research skill — it verifies its own citations, whichever agent you use. <a href="${ORIGIN}/agent-setup/prompt.md">Adopt the skill →</a></div></div>
+<div class="topbar"><div class="topbar-inner"><span class="dot"></span>Proofworks is a research skill — it verifies its own citations, whichever agent you use. <a href="#integrations">Adopt the skill →</a></div></div>
 
 <!-- nav -->
 <nav>
@@ -464,7 +464,7 @@ BODY  <span class="st" style="color:#85d39d">{"claim": "Jan 1 2027 is a Monday",
     <h2 class="serif">Agent files and specs</h2>
     <p class="res-sub">These <b>machine formats</b> are for agents and scripts, not human reading, so each opens as raw text or JSON. Below is what each one is for.</p>
     <div class="res-grid">
-      <a class="res-card" href="${ORIGIN}/agent-setup/prompt.md">
+      <a class="res-card" href="#integrations">
         <div class="rt">SETUP</div><h3>Setup prompt</h3>
         <p>The skill in one paste-able line. Any agent fetches it and adopts the verify-and-backfill loop. Markdown.</p>
         <span class="mono">/agent-setup/prompt.md</span>
