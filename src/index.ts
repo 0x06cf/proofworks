@@ -1,5 +1,5 @@
 // index.ts
-// Proofworks — deterministic verification oracle (MCP / API).
+// Proofworks — a research tool that verifies its own citations (MCP / API).
 // Routing:
 //   agent.ts   -> /robots.txt, /sitemap.xml, /llms.txt, /openapi.json,
 //                 /.well-known/*, /agent-setup/prompt.md, /mcp.json

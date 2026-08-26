@@ -1,5 +1,5 @@
 // ui.ts
-// Proofworks — deterministic verification oracle, MCP-first.
+// Proofworks — a research tool that verifies its own citations, MCP-first.
 // `/` serves a full marketing landing (hero + live verdict demo + offer +
 // integrations + use cases + FAQ + CTA). No SPA, no human-verification jury.
 // Visual system: Vercel-style precision (Geist, shadow-as-border, #171717/#fff)
@@ -14,12 +14,12 @@ const LANDING = `<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Proofworks is an MCP server, a deterministic verification oracle. Connect your AI agent, then check claims it makes: computed, matched to sources, or admitted unverifiable.">
+<meta name="description" content="Proofworks is a research tool for AI agents. It gathers sources, cites them, then verifies each citation actually supports the claim — computed, matched to a source, or admitted unverifiable.">
 <link rel="canonical" href="${ORIGIN}/">
 <meta property="og:type" content="website">
 <meta property="og:url" content="${ORIGIN}/">
 <meta property="og:title" content="Proofworks — let your agent prove it">
-<meta property="og:description" content="An MCP server that verifies claims deterministically. certain · source-backed · unverifiable. Never a fake yes.">
+<meta property="og:description" content="A research tool for AI agents that verifies its own citations. certain · source-backed · unverifiable. Never a fake yes.">
 <title>Proofworks — let your agent prove it</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -283,12 +283,12 @@ footer a:hover{color:var(--ink)}
 <!-- HERO -->
 <section class="hero" style="padding-top:64px">
   <div class="container">
-    <div class="kicker"><span>oracle</span> · <b>deterministic</b> · <span>MCP server</span></div>
-    <h1>Don't let the agent <span class="strike">guess</span><br>make it <span class="ok">prove</span> the claim.</h1>
-    <p class="hero-sub">Proofworks is the verification endpoint for AI agents. Connect it over MCP, then check any claim the model makes. <a href="#offer">Arithmetic and dates are computed</a>. Everything else is matched to a source. What can't be proven is marked <b class="mono" style="color:var(--unver)">unverifiable</b>, not passed off as fact.</p>
+    <div class="kicker"><span>research tool</span> · <b>self-verifying</b> · <span>MCP server</span></div>
+    <h1>Don't let the agent hand you <span class="strike">citations it never checked</span><br>make it <span class="ok">prove</span> its sources.</h1>
+    <p class="hero-sub">Proofworks is a research tool for AI agents: it gathers sources, cites them, then <b>checks its own work</b> — confirming each citation actually supports the claim before you trust the answer. <a href="#offer">Arithmetic and dates are computed</a>. Everything else is matched to a real source. What can't be proven is marked <b class="mono" style="color:var(--unver)">unverifiable</b>, not passed off as fact.</p>
     <div class="hero-cta">
       <a class="btn" href="#install">Onboard your agent</a>
-      <a class="btn ghost" href="#demo" id="tryInline">Try the oracle</a>
+      <a class="btn ghost" href="#demo" id="tryInline">See a verified answer</a>
       <div class="note">No signup, no credit card, no auth. Public server.</div>
     </div>
 
@@ -313,13 +313,13 @@ footer a:hover{color:var(--ink)}
   </div>
 </section>
 
-<!-- OFFER: confidence ladder -->
+<!-- OFFER: how a claim gets verified -->
 <section id="offer">
   <div class="container">
     <div class="sec-head">
       <div class="eyebrow">What we offer</div>
-      <h2>Every verdict states how it was reached</h2>
-      <p>The point isn't only to say "true" or "false". The point is to say <em>why</em>, and to refuse to guess when it can't.</p>
+      <h2>Every citation gets checked before you trust the answer</h2>
+      <p>The point isn't only to say "true" or "false". The point is to show <em>why</em> — and to refuse to fake it when neither a computation nor a source backs a claim.</p>
     </div>
     <div class="offer-grid">
       <div class="offer-card oc-certain">
@@ -379,8 +379,8 @@ footer a:hover{color:var(--ink)}
       <h2>Built like infrastructure</h2>
     </div>
     <div class="nums">
-      <div class="num"><span class="big green">0</span><p>LLMs grading your LLM. Every verdict is a computation or a match, never an opinion.</p></div>
-      <div class="num"><span class="big blue">∞</span><p>Claims it will verify. Add arithmetic, dates, and source citations and it just answers.</p></div>
+      <div class="num"><span class="big green">0</span><p>Citations handed over unchecked. A claim either checks against a real source or it doesn't — no vibes.</p></div>
+      <div class="num"><span class="big blue">∞</span><p>Research it can handle. Source-gathered answers get their citations verified claim by claim.</p></div>
       <div class="num"><span class="big">1</span><p>Line to install. An MCP config entry, or a single setup prompt if you'd rather.</p></div>
       <div class="num"><span class="big">$0</span><p>Cost to start. Public server, no pricing, no account. Free for agents.</p></div>
     </div>
@@ -429,8 +429,8 @@ footer a:hover{color:var(--ink)}
     <div class="principle">
       <div>
         <div class="eyebrow">Why it works</div>
-        <h2>An oracle can't hallucinate a verdict</h2>
-        <p class="sub">The whole design rests on a rule: <b>no LLM grades the answer.</b> A computation either computes or it doesn't. A source either matches or it doesn't. When neither applies, the oracle says so. That constraint is what makes the verdict trustworthy at all.</p>
+        <h2>Research, then check the research</h2>
+        <p class="sub">Your agent gathers sources and cites them; Proofworks is the step that <b>checks its own work</b>. A computation either computes or it doesn't. A source either supports the claim or it doesn't. When neither applies, it says so instead of wallpapering over the gap. That step is what makes the citations you can't check yourself worth trusting.</p>
         <div class="ladder">
           <div class="row"><span class="tag ok mono">certain</span><span>computed from the claim itself</span></div>
           <div class="row"><span class="tag zz mono">source-backed</span><span>matched to a real citation</span></div>
@@ -472,8 +472,8 @@ BODY  <span class="st" style="color:#85d39d">{"claim": "Jan 1 2027 is a Monday"}
         <div class="ans">It's a free public server, no account and no pricing. The goal is to be a neutral verification layer that any agent can reach, the way it reaches the network.</div>
       </details>
       <details>
-        <summary>Why is "no LLM in the loop" the point?</summary>
-        <div class="ans">If an LLM graded another LLM's work, you'd be trusting a model to judge a model, and your confidence would scale on faith. A deterministic oracle removes that: the verdict is reproducible and inspectable. It can be wrong only in the way a computation or a bad source can be wrong, never in the way a confident guess is.</div>
+        <summary>Why does it verify citations with computation and sources, not another model?</summary>
+        <div class="ans">If one model judged another model's answer, your confidence would rest on trust in the judge. Proofworks' verifying step runs on computation and real sources instead: a verdict is reproducible and inspectable. It can be wrong only in the way a computation or a bad source is wrong, never in the way a confident guess is. That's what lets an agent hand you cited research you can actually check.</div>
       </details>
       <details>
         <summary>Can I host my own?</summary>
@@ -526,8 +526,8 @@ BODY  <span class="st" style="color:#85d39d">{"claim": "Jan 1 2027 is a Monday"}
 
 <!-- CTA -->
 <section class="cta-band" id="install">
-  <h2>Give your agent a referee.</h2>
-  <p>Paste the setup prompt into any agent chat. It connects itself, then starts verifying.</p>
+  <h2>Give your agent a proofreader for its citations.</h2>
+  <p>Paste the setup prompt into any agent chat. It connects itself, then verifies every source before it hands you an answer.</p>
   <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;position:relative;z-index:2">
     <a class="btn" href="${ORIGIN}/agent-setup/prompt.md">Read the setup prompt</a>
     <a class="btn ghost" href="https://github.com/0x06cf/proofworks" target="_blank" rel="noopener">View the repo</a>
@@ -547,7 +547,7 @@ BODY  <span class="st" style="color:#85d39d">{"claim": "Jan 1 2027 is a Monday"}
   <div class="foot-grid">
     <div class="foot-brand">
       <a class="brand" href="${ORIGIN}/"><span class="mark">✓</span>Proofworks</a>
-      <p>A deterministic verification oracle. Let your agent prove it.</p>
+      <p>A research tool your agent uses to verify its own citations. Let it prove the sources before you trust the answer.</p>
     </div>
     <div>
       <h4>Product</h4>
