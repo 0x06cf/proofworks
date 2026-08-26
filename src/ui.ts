@@ -298,7 +298,7 @@ footer a:hover{color:var(--ink)}
           </div>
           <div class="demo-row">
             <div class="demo-q">"D1 charges 5¢ per million rows read."<span class="src">← cited · developers.cloudflare.com/d1/pricing</span></div>
-            <div class="verdict v-refuted"><span class="sym">✗</span><span class="txt">not in the source — real pricing uses a different rate</span><span class="tag">unsupported</span></div>
+            <div class="verdict v-refuted"><span class="sym">✗</span><span class="txt">not in the source — the pricing page lists <b>$0.001</b>/million rows read, not 5¢, so the skill suggests that correction instead</span><span class="tag">unsupported · correction</span></div>
           </div>
           <div class="demo-row">
             <div class="demo-q">"The Eiffel Tower is in Miami."<span class="src">← no source cited</span></div>
@@ -467,7 +467,7 @@ BODY  <span class="st" style="color:#85d39d">{"claim": "Jan 1 2027 is a Monday",
       </details>
       <details>
         <summary>Can I host my own?</summary>
-        <div class="ans">It already runs client-side — the skill lives in your agent on your own machine, so your research never leaves it. The hosted site and API are an optional deployment of the same idea if you'd rather point an agent at a shared service; the source is open in the repo.</div>
+        <div class="ans">It already runs client-side — the skill and its two helper scripts live in the repo (<span class="mono">github.com/0x06cf/proofworks</span>), so your agent runs the whole loop on your own machine and your own model. Your research never leaves your machine.</div>
       </details>
     </div>
   </div>
