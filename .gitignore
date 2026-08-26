@@ -3,4 +3,3 @@ node_modules/
 .dev.vars
 __pycache__/
 *.pyc
-og-image.ts
