@@ -32,6 +32,8 @@ const LANDING = `<!doctype html>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="${ORIGIN}/anim.css">
+<script src="${ORIGIN}/anim.js" defer></script>
 <style>
 :root{
   --bg:#ffffff; --ink:#171717; --ink2:#4d4d4d; --ink3:#666666; --line:#ebebeb;
@@ -260,42 +262,43 @@ footer a:hover{color:var(--ink)}
     </div>
     <div class="nav-cta">
       <a class="btn ghost" href="#resources">Docs</a>
-      <a class="btn" href="#integrations">Onboard an agent</a>
+      <a class="btn pw-mag" href="#integrations">Onboard an agent</a>
     </div>
   </div>
 </nav>
 
 <!-- HERO -->
-<section class="hero" style="padding-top:64px">
-  <div class="container">
-    <div class="kicker"><span>research skill</span> · <b>self-verifying</b> · <span>works with any agent</span></div>
-    <h1>Don't let the agent hand you <span class="strike">citations it never checked</span><br>make it <span class="ok">prove</span> its sources.</h1>
-    <p class="hero-sub">Proofworks is a research tool for AI agents: it gathers sources, cites them, then <b>checks its own work</b> — confirming each citation actually supports the claim before you trust the answer. <a href="#offer">Arithmetic and dates are computed</a>. Everything else is matched to a real source. What can't be proven is marked <b class="mono" style="color:var(--unver)">unverifiable</b>, not passed off as fact.</p>
-    <div class="hero-cta">
-      <a class="btn" href="#integrations">Onboard your agent</a>
-      <a class="btn ghost" href="#demo" id="tryInline">See a verified answer</a>
+<section class="hero pw-hero pw-loadable" style="padding-top:64px">
+  <div class="pw-spotlight" aria-hidden="true"></div>
+  <div class="container pw-hero-zoom">
+    <div class="kicker pw-rise"><span>research skill</span> · <b>self-verifying</b> · <span>works with any agent</span></div>
+    <h1 class="pw-rise">Don't let the agent hand you <span class="strike">citations it never checked</span><br>make it <span class="ok pw-shimmer">prove</span> its sources.</h1>
+    <p class="hero-sub pw-rise">Proofworks is a research tool for AI agents: it gathers sources, cites them, then <b>checks its own work</b> — confirming each citation actually supports the claim before you trust the answer. <a href="#offer">Arithmetic and dates are computed</a>. Everything else is matched to a real source. What can't be proven is marked <b class="mono" style="color:var(--unver)">unverifiable</b>, not passed off as fact.</p>
+    <div class="hero-cta pw-rise">
+      <a class="btn pw-mag" href="#integrations">Onboard your agent</a>
+      <a class="btn ghost pw-mag" href="#demo" id="tryInline">See a verified answer</a>
       <div class="note">No account, no API key, no hosted server — it runs on your own agent and your own model.</div>
     </div>
 
     <!-- live verdict demo -->
     <div class="demo" id="demo">
-      <div class="demo-card">
+      <div class="demo-card pw-reveal" data-dir="zoom" data-delay=".5s">
               <div class="demo-head">
                 <span class="cir"></span><span class="cir"></span><span class="cir"></span>
                 <span class="title">proofworks skill — real run, three claims checked against live sources</span>
               </div>
               <div class="demo-body demo-static">
-                <div class="demo-row">
+                <div class="demo-row pw-reveal" data-delay=".52s">
                   <div class="demo-q">Claim: "Cloudflare's D1 gives you a serverless SQL database."<span class="src">cited → developers.cloudflare.com/d1</span></div>
-                  <div class="verdict v-source"><span class="sym">✓</span><span class="txt"><b>verified</b> — "serverless SQL database" appears in the fetched page: <span class="passage">"Create new <b>serverless SQL databases</b> to query from your Workers and Pages projects."</span></span><span class="tag">verified</span></div>
+                  <div class="verdict v-source"><span class="sym">✓</span><span class="txt"><b>verified</b> — "serverless SQL database" appears in the fetched page: <span class="passage">"Create new <b>serverless SQL databases</b> to query from your Workers and Pages projects."</span></span><span class="tag pw-float">verified</span></div>
                 </div>
-                <div class="demo-row">
+                <div class="demo-row pw-reveal" data-delay=".6s">
                   <div class="demo-q">Claim: "D1 charges 5¢ per million rows read."<span class="src">cited → developers.cloudflare.com/d1/pricing</span></div>
-                  <div class="verdict v-refuted"><span class="sym">✗</span><span class="txt"><b>unsupported</b> — the pricing page lists <b>$0.001</b>/million rows read, not 5¢, so the skill suggests that correction instead</span><span class="tag">unsupported · correction</span></div>
+                  <div class="verdict v-refuted"><span class="sym">✗</span><span class="txt"><b>unsupported</b> — the pricing page lists <b>$0.001</b>/million rows read, not 5¢, so the skill suggests that correction instead</span><span class="tag pw-float">unsupported · correction</span></div>
                 </div>
-                <div class="demo-row">
+                <div class="demo-row pw-reveal" data-delay=".68s">
                   <div class="demo-q">Claim: "The Eiffel Tower is in Miami."<span class="src">no source cited</span></div>
-                  <div class="verdict v-unver"><span class="sym">—</span><span class="txt"><b>unverifiable</b> — no source to check, so it won't confirm from memory; it flags the likely correction (Paris) for you to verify</span><span class="tag">unverifiable · correction</span></div>
+                  <div class="verdict v-unver"><span class="sym">—</span><span class="txt"><b>unverifiable</b> — no source to check, so it won't confirm from memory; it flags the likely correction (Paris) for you to verify</span><span class="tag pw-float">unverifiable · correction</span></div>
                 </div>
               </div>
             </div>
@@ -307,25 +310,25 @@ footer a:hover{color:var(--ink)}
 <!-- OFFER: how a claim gets verified -->
 <section id="offer">
   <div class="container">
-    <div class="sec-head">
+    <div class="sec-head pw-reveal">
       <div class="eyebrow">What we offer</div>
       <h2>Every citation gets checked before you trust the answer</h2>
       <p>The point isn't only to say "true" or "false". The point is to show <em>why</em> — and to refuse to fake it when neither a source nor a computation backs a claim.</p>
     </div>
     <div class="offer-grid">
-      <div class="offer-card oc-certain">
+      <div class="offer-card oc-certain pw-reveal pw-lift" data-delay=".05s">
         <span class="lvl">Verified · passage found</span>
         <h3>Checked against the source</h3>
         <p>The exact quote or number is fetched from the cited source and shown to be there — with the passage that backs it. A claim either checks out or it doesn't.</p>
         <div class="eg">"Workers has a free tier"<br><span class="ok">✓ verified</span> · the passage appears in the fetched docs</div>
       </div>
-      <div class="offer-card oc-source">
+      <div class="offer-card oc-source pw-reveal pw-lift" data-delay=".13s">
         <span class="lvl">Strict judgment</span>
         <h3>Reads the passage, doesn't guess</h3>
         <p>When a claim isn't a literal match, the skill reads the fetched source text and asks only: does this passage support the claim as written? It never answers from memory and never rewrites the claim.</p>
         <div class="eg">"15% of 1200 is 200"<br><span class="no">✗ unsupported</span> · the source says 180</div>
       </div>
-      <div class="offer-card oc-unver">
+      <div class="offer-card oc-unver pw-reveal pw-lift" data-delay=".21s">
         <span class="lvl">Unverifiable · refused</span>
         <h3>It won't fake confidence</h3>
         <p>No source, no computation, no claim. The honest answer is <b>unverifiable</b> — and it flags a likely correction for you to check, rather than passing off a guess as fact.</p>
@@ -338,12 +341,12 @@ footer a:hover{color:var(--ink)}
 <!-- INTEGRATIONS -->
 <section class="alt" id="integrations">
   <div class="container">
-    <div class="sec-head">
+    <div class="sec-head pw-reveal">
       <div class="eyebrow">Integrations</div>
       <h2>It's a skill. Any agent can pick it up.</h2>
       <p>Proofworks is an agent skill: paste the setup prompt into whatever agent you use and it adopts the verify-and-backfill loop itself. No MCP config, no server setup.</p>
     </div>
-    <div class="int-single">
+    <div class="int-single pw-reveal" data-delay=".1s">
       <div class="install-box">
         <div class="install-bar"><span>&lt;paste this into your agent&gt;</span><button id="copySkill">Copy</button></div>
         <pre class="code" id="skillPrompt">Fetch and execute the setup instructions for the Proofworks skill from @url:\`${ORIGIN}/agent-setup/prompt.md\`</pre>
@@ -356,15 +359,15 @@ footer a:hover{color:var(--ink)}
 <!-- NUMBERS -->
 <section id="numbers">
   <div class="container">
-    <div class="sec-head">
+    <div class="sec-head pw-reveal">
       <div class="eyebrow">By the numbers</div>
       <h2>Built like infrastructure</h2>
     </div>
     <div class="nums">
-      <div class="num"><span class="big green">1</span><p>Verify pass a claim goes through. Its source is fetched and read before it's trusted — deterministic match, then a strict judgment of the passage.</p></div>
-      <div class="num"><span class="big blue">∞</span><p>Research it can handle. Source-gathered answers get their citations verified claim by claim.</p></div>
-      <div class="num"><span class="big">1</span><p>Prompt to paste. Any agent adopts the skill from a single setup line.</p></div>
-      <div class="num"><span class="big">$0</span><p>Cost to start. It runs client-side on your own machine and your own model.</p></div>
+      <div class="num pw-reveal pw-lift"><span class="big green">1</span><p>Verify pass a claim goes through. Its source is fetched and read before it's trusted — deterministic match, then a strict judgment of the passage.</p></div>
+      <div class="num pw-reveal pw-lift" data-delay=".08s"><span class="big blue">∞</span><p>Research it can handle. Source-gathered answers get their citations verified claim by claim.</p></div>
+      <div class="num pw-reveal pw-lift" data-delay=".16s"><span class="big">1</span><p>Prompt to paste. Any agent adopts the skill from a single setup line.</p></div>
+      <div class="num pw-reveal pw-lift" data-delay=".24s"><span class="big">$0</span><p>Cost to start. It runs client-side on your own machine and your own model.</p></div>
     </div>
   </div>
 </section>
@@ -372,31 +375,27 @@ footer a:hover{color:var(--ink)}
 <!-- USE CASES -->
 <section class="alt" id="use-cases">
   <div class="container">
-    <div class="sec-head">
+    <div class="sec-head pw-reveal">
       <div class="eyebrow">Use cases</div>
       <h2>Where an agent needs a referee</h2>
     </div>
     <div class="uc-grid">
-      <div class="uc-card ucdark">
-        <span class="uc-verb">Caught before shipping</span>
+      <div class="uc-card ucdark pw-reveal pw-lift"><span class="uc-verb">Caught before shipping</span>
         <h3>Arithmetic slips</h3>
         <p>Agents miss decimals, flip signs, round oddly. Run the figure through the skill's check before you trust it in an answer or a dashboard.</p>
         <div class="ex">"The total is 1,248.60" → asks Proofworks what 42 × 29.73 is.</div>
       </div>
-      <div class="uc-card">
-        <span class="uc-verb">Honest citations</span>
+      <div class="uc-card pw-reveal pw-lift" data-delay=".08s"><span class="uc-verb">Honest citations</span>
         <h3>Source grounding</h3>
         <p>Before an agent cites a page, verify the claim actually appears there. Source-backed verdicts show the passage that supports the statement.</p>
         <div class="ex">"Workers LTS runs to 2027" → matched against the docs page you passed in.</div>
       </div>
-      <div class="uc-card">
-        <span class="uc-verb">A number it won't invent</span>
+      <div class="uc-card pw-reveal pw-lift" data-delay=".16s"><span class="uc-verb">A number it won't invent</span>
         <h3>Deadline and date math</h3>
         <p>Day-of-week, weeks-between, "is this date valid". The kind of thing an LLM will happily guess at and get wrong.</p>
         <div class="ex">"Dec 1 2027 is a Wednesday" → refuted when it isn't.</div>
       </div>
-      <div class="uc-card ucdark">
-        <span class="uc-verb">Composed pipelines</span>
+      <div class="uc-card ucdark pw-reveal pw-lift" data-delay=".24s"><span class="uc-verb">Composed pipelines</span>
         <h3>Agent-to-agent checks</h3>
         <p>A downstream agent runs the skill on an upstream agent's cited output. Verification becomes a step in the pipeline, not a hope.</p>
         <div class="ex">Planner hands off → verifier runs each step → only verified work proceeds.</div>
@@ -437,11 +436,11 @@ BODY  <span class="st" style="color:#85d39d">{"claim": "Jan 1 2027 is a Monday",
 <!-- FAQ -->
 <section class="alt" id="faq">
   <div class="container">
-    <div class="sec-head">
+    <div class="sec-head pw-reveal">
       <div class="eyebrow">FAQ</div>
       <h2>Frequently asked</h2>
     </div>
-    <div class="faq">
+    <div class="faq pw-reveal">
       <details open>
         <summary>What does Proofworks actually check?</summary>
         <div class="ans">For every claim that cites a source, it verifies that citation. A deterministic first pass asks whether the exact quote or number appears in the fetched source — <b class="mono">verified</b> with the supporting passage. Claims that don't literally match get a strict read of the passage: does it support the claim as written? If nothing backs it, the result is <b class="mono">unsupported</b>. When there's no claim to verify, <b class="mono">unverifiable</b> rather than a guess.</div>
@@ -473,22 +472,22 @@ BODY  <span class="st" style="color:#85d39d">{"claim": "Jan 1 2027 is a Monday",
     <h2 class="serif">Agent files and specs</h2>
     <p class="res-sub">These <b>machine formats</b> are for agents and scripts, not human reading, so each opens as raw text or JSON. Below is what each one is for.</p>
     <div class="res-grid">
-      <a class="res-card" href="#integrations">
+      <a class="res-card pw-reveal pw-lift" href="#integrations">
         <div class="rt">SETUP</div><h3>Setup prompt</h3>
         <p>The skill in one paste-able line. Any agent fetches it and adopts the verify-and-backfill loop. Markdown.</p>
         <span class="mono">/agent-setup/prompt.md</span>
       </a>
-      <a class="res-card" href="https://github.com/0x06cf/proofworks" target="_blank" rel="noopener">
+      <a class="res-card pw-reveal pw-lift" href="https://github.com/0x06cf/proofworks" target="_blank" rel="noopener">
         <div class="rt">SKILL</div><h3>Source + skill</h3>
         <p>The full skill: SKILL.md, the loop protocol, and the fetch + presence-check helper scripts. Open source.</p>
         <span class="mono">github.com/0x06cf/proofworks</span>
       </a>
-      <a class="res-card" href="${ORIGIN}/llms.txt">
+      <a class="res-card pw-reveal pw-lift" href="${ORIGIN}/llms.txt">
         <div class="rt">LLMS</div><h3>llms.txt</h3>
         <p>AI content signal; a map of the skill for agent crawlers. Plain text.</p>
         <span class="mono">/llms.txt</span>
       </a>
-      <a class="res-card" href="${ORIGIN}/robots.txt">
+      <a class="res-card pw-reveal pw-lift" href="${ORIGIN}/robots.txt">
         <div class="rt">SPEC</div><h3>robots.txt</h3>
         <p>Crawler policy: what indexers may read and cite. Plain text.</p>
         <span class="mono">/robots.txt</span>

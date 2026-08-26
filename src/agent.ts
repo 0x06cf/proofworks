@@ -12,6 +12,7 @@
 // No API. No MCP. No auth. Pure static content + the skill.
 
 import { OG_IMAGE_PNG } from './og-image';
+import { ANIM_CSS, ANIM_JS } from './anim';
 
 export const AGENT_HOST = 'sentrylab.app';
 export const AGENT_BASE = `https://${AGENT_HOST}`;
@@ -195,7 +196,10 @@ export async function handleAgentStatic(url: URL): Promise<Response | null> {
   }
   let body: string | null = null;
   let type = 'text/plain; charset=utf-8';
+  let cache = 'public, max-age=3600';
   if (p === '/robots.txt') body = ROBOTS;
+  else if (p === '/anim.css') { body = ANIM_CSS; type = 'text/css; charset=utf-8'; cache = 'no-cache'; }
+  else if (p === '/anim.js') { body = ANIM_JS; type = 'application/javascript; charset=utf-8'; cache = 'no-cache'; }
   else if (p === '/sitemap.xml') { body = SITEMAP; type = 'application/xml; charset=utf-8'; }
   else if (p === '/llms.txt') body = LLMS;
   else if (p === '/agent-setup/prompt.md') body = AGENT_PROMPT;
@@ -209,7 +213,7 @@ export async function handleAgentStatic(url: URL): Promise<Response | null> {
   else return null;
   return new Response(body, { status: 200, headers: {
     'Content-Type': type,
-    'Cache-Control': 'public, max-age=3600',
+    'Cache-Control': cache,
     'Access-Control-Allow-Origin': '*',
   } });
 }
