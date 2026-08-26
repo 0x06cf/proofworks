@@ -96,12 +96,10 @@ h1 .ok{color:var(--certain)}
 .demo-head .cir:nth-child(1){background:#ff5f57}.demo-head .cir:nth-child(2){background:#febc2e}.demo-head .cir:nth-child(3){background:#28c840}
 .demo-head .title{margin-left:8px;font-family:'Geist Mono',monospace;font-size:12.5px;color:var(--ink3)}
 .demo-body{padding:20px 22px 22px}
-.demo-input{width:100%;font-size:15px;border:1px solid var(--line);border-radius:8px;padding:12px 14px;font-family:'Geist Mono',monospace;color:var(--ink);resize:vertical;min-height:64px;outline:none;background:#fbfbfb}
-.demo-input:focus{border-color:var(--source);box-shadow:0 0 0 3px rgba(10,114,239,.12)}
-.demo-run{margin-top:12px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.spin{width:14px;height:14px;border:2px solid var(--line);border-top-color:var(--ink);border-radius:50%;animation:rot .7s linear infinite;display:none}
-@keyframes rot{to{transform:rotate(360deg)}}
-.demo-out{margin-top:16px;display:none;flex-direction:column;gap:8px}
+.demo-static{display:flex;flex-direction:column;gap:10px}
+.demo-row{border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.demo-q{font-size:14px;color:var(--ink);line-height:1.5}
+.demo-q .src{display:block;margin-top:4px;font-family:'Geist Mono',monospace;font-size:11.5px;color:var(--ink3)}
 .verdict{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:9px;background:#fbfbfb;box-shadow:var(--line) 0 0 0 1px}
 .verdict .sym{font-family:'Geist Mono',monospace;font-weight:600;font-size:15px;line-height:1.4;width:20px;text-align:center}
 .verdict .txt{flex:1;font-size:14px;line-height:1.45;color:var(--ink)}
@@ -137,12 +135,7 @@ h2{font-size:clamp(30px,4.4vw,42px);font-weight:600;line-height:1.1;letter-spaci
 .offer-card .eg .ok{color:var(--certain)}.offer-card .eg .no{color:var(--refuted)}
 
 /* ---------- integrations ---------- */
-.int-row{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
-.agent-list{display:flex;flex-wrap:wrap;gap:10px}
-.agent-pill{display:inline-flex;align-items:center;gap:8px;font-family:'Geist Mono',monospace;font-size:13.5px;font-weight:500;padding:9px 14px;border-radius:8px;box-shadow:var(--ring) 0 0 0 1px;background:#fff;cursor:pointer;transition:all .12s}
-.agent-pill .square{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:5px;font-size:11px;background:var(--ink);color:#fff}
-.agent-pill:hover{box-shadow:var(--ring) 0 0 0 1px, rgba(0,0,0,.05) 0 3px 12px -4px}
-.agent-pill.active{border-color:transparent;box-shadow:0 0 0 2px var(--source)}
+.int-single{max-width:760px;margin:8px auto 0}
 .install-box{background:#0b0d10;border-radius:13px;overflow:hidden;box-shadow:0 20px 60px -30px rgba(0,0,0,.4)}
 .install-bar{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;background:#111419;border-bottom:1px solid #1d2228}
 .install-bar span{font-family:'Geist Mono',monospace;font-size:12px;color:#8b949e}
@@ -297,18 +290,24 @@ footer a:hover{color:var(--ink)}
       <div class="demo-card">
         <div class="demo-head">
           <span class="cir"></span><span class="cir"></span><span class="cir"></span>
-          <span class="title">proofworks — deterministic math demo</span>
+          <span class="title">proofworks skill — a claim, checked against its source</span>
         </div>
-        <div class="demo-body">
-          <textarea class="demo-input" id="demoInput" spellcheck="false" readonly aria-readonly="true">January 1 2027 is a Monday. 15% of 1200 is 180. The Eiffel Tower is in Miami.</textarea>
-          <div class="demo-run">
-            <button class="btn" id="demoBtn">Verify</button>
-            <span class="spin" id="demoSpin"></span>
+        <div class="demo-body demo-static">
+          <div class="demo-row">
+            <div class="demo-q">"Cloudflare's D1 gives you a serverless SQL database."<span class="src">← cited · developers.cloudflare.com/d1</span></div>
+            <div class="verdict v-source"><span class="sym">✓</span><span class="txt">source-backed — exact phrase found in the fetched page</span><span class="tag">supported</span></div>
           </div>
-          <div class="demo-out" id="demoOut"></div>
+          <div class="demo-row">
+            <div class="demo-q">"D1 charges 5¢ per million rows read."<span class="src">← cited · developers.cloudflare.com/d1/pricing</span></div>
+            <div class="verdict v-refuted"><span class="sym">✗</span><span class="txt">not in the source — real pricing uses a different rate</span><span class="tag">unsupported</span></div>
+          </div>
+          <div class="demo-row">
+            <div class="demo-q">"The Eiffel Tower is in Miami."<span class="src">← no source cited</span></div>
+            <div class="verdict v-unver"><span class="sym">—</span><span class="txt">no computation, no source → honest refusal</span><span class="tag">unverifiable</span></div>
+          </div>
         </div>
       </div>
-      <div class="demo-hint">A fixed demo: it computes arithmetic and dates from the sample above. It does <b>not</b> research open questions or run your own claims.</div>
+      <div class="demo-hint">Real output the skill produces. It fetches the cited source, checks the claim against it, and says why — it does <b>not</b> run open research or rewrite your claims.</div>
     </div>
   </div>
 </section>
@@ -349,24 +348,15 @@ footer a:hover{color:var(--ink)}
   <div class="container">
     <div class="sec-head">
       <div class="eyebrow">Integrations</div>
-      <h2>Connect your agent in one line</h2>
-      <p>Proofworks speaks MCP, so it drops into whatever agent you already use. Pick yours to get the exact snippet.</p>
+      <h2>It's a skill. Any agent can pick it up.</h2>
+      <p>Proofworks is an agent skill: paste the setup prompt into whatever agent you use and it adopts the verify-and-backfill loop itself. No MCP config, no server setup.</p>
     </div>
-    <div class="int-row">
-      <div class="agent-list" id="agentList">
-        <div class="agent-pill active" data-agent="claude"><span class="square">C</span>Claude Code</div>
-        <div class="agent-pill" data-agent="codex"><span class="square">X</span>Codex</div>
-        <div class="agent-pill" data-agent="opencode"><span class="square">O</span>OpenCode</div>
-        <div class="agent-pill" data-agent="windsurf"><span class="square">W</span>Windsurf</div>
-        <div class="agent-pill" data-agent="cursor"><span class="square">\"</span>Cursor</div>
+    <div class="int-single">
+      <div class="install-box">
+        <div class="install-bar"><span>&lt;paste this into your agent&gt;</span><button id="copySkill">Copy</button></div>
+        <pre class="code" id="skillPrompt">Fetch and execute the setup instructions for the Proofworks skill from @url:\`${ORIGIN}/agent-setup/prompt.md\`</pre>
       </div>
-      <div>
-        <div class="install-box">
-          <div class="install-bar"><span id="agentName">claude code</span><button id="copyInstall">Copy</button></div>
-          <pre class="code" id="installCode"></pre>
-        </div>
-        <div class="int-note">Prefer the agent to install itself? <a href="${ORIGIN}/agent-setup/prompt.md">Use the setup prompt →</a></div>
-      </div>
+      <div class="int-note">Works with Claude Code, Codex, OpenCode, Windsurf, Cursor, and any agent that can run a skill. Prefer to read it first? <a href="${ORIGIN}/agent-setup/prompt.md">Open the setup prompt →</a></div>
     </div>
   </div>
 </section>
@@ -379,10 +369,10 @@ footer a:hover{color:var(--ink)}
       <h2>Built like infrastructure</h2>
     </div>
     <div class="nums">
-      <div class="num"><span class="big green">0</span><p>Citations handed over unchecked. A claim either checks against a real source or it doesn't — no vibes.</p></div>
+      <div class="num"><span class="big green">1</span><p>Verify pass a claim goes through. Its source is fetched and read before it's trusted — deterministic match, then a strict judgment of the passage.</p></div>
       <div class="num"><span class="big blue">∞</span><p>Research it can handle. Source-gathered answers get their citations verified claim by claim.</p></div>
-      <div class="num"><span class="big">1</span><p>Line to install. An MCP config entry, or a single setup prompt if you'd rather.</p></div>
-      <div class="num"><span class="big">$0</span><p>Cost to start. Public server, no pricing, no account. Free for agents.</p></div>
+      <div class="num"><span class="big">1</span><p>Prompt to paste. Any agent adopts the skill from a single setup line.</p></div>
+      <div class="num"><span class="big">$0</span><p>Cost to start. It runs client-side on your own machine and your own model.</p></div>
     </div>
   </div>
 </section>
@@ -472,12 +462,12 @@ BODY  <span class="st" style="color:#85d39d">{"claim": "Jan 1 2027 is a Monday"}
         <div class="ans">It's a free public server, no account and no pricing. The goal is to be a neutral verification layer that any agent can reach, the way it reaches the network.</div>
       </details>
       <details>
-        <summary>Why does it verify citations with computation and sources, not another model?</summary>
-        <div class="ans">If one model judged another model's answer, your confidence would rest on trust in the judge. Proofworks' verifying step runs on computation and real sources instead: a verdict is reproducible and inspectable. It can be wrong only in the way a computation or a bad source is wrong, never in the way a confident guess is. That's what lets an agent hand you cited research you can actually check.</div>
+        <summary>How does the verifying step avoid trusting a judge?</summary>
+        <div class="ans">It's a two-pass check. First a deterministic pass asks whether the exact quote or number appears in the fetched source — that part is a computation, not a guess. Claims that don't literally match go to a strict judgment pass where the model reads the actual source text and answers only "does this passage support the claim as written?" — never from memory, and never by rewriting the claim. So a model does judge, but it's bound to the source text, not free to improvise.</div>
       </details>
       <details>
         <summary>Can I host my own?</summary>
-        <div class="ans">Yes. It's a Cloudflare Worker (TypeScript, D1 + KV) and the source is open in the repo. Point the same MCP endpoints at your own deployment and keep all traffic on your infra.</div>
+        <div class="ans">It already runs client-side — the skill lives in your agent on your own machine, so your research never leaves it. The hosted site and API are an optional deployment of the same idea if you'd rather point an agent at a shared service; the source is open in the repo.</div>
       </details>
     </div>
   </div>
@@ -576,81 +566,14 @@ BODY  <span class="st" style="color:#85d39d">{"claim": "Jan 1 2027 is a Monday"}
 (function(){
   var ORIG='${ORIGIN}';
 
-  // ---- agent install snippets ----
-  var installs={
-    claude:{name:'claude code',code:
-'# Install via MCP (HTTP)\\nclaude mcp add --transport http proofworks ${ORIGIN}/mcp\\n'+
-'# Restart Claude Code, then: "verify 15% of 1200"\\n'},
-    codex:{name:'codex',code:
-'# Add the server once\\ncodex mcp add proofworks --url ${ORIGIN}/mcp\\n'+
-'# Then in a session: claim_check is available automatically\\n'},
-    opencode:{name:'opencode',code:
-'// ~/.config/opencode/opencode.jsonc  →  "mcp": {\\n"proofworks": {\\n  "type": "remote",\\n  "url": "${ORIGIN}/mcp",\\n  "enabled": true\\n}\\n// }'},
-    windsurf:{name:'windsurf',code:
-'// ~/.codeium/windsurf/mcp_config.json  →  "mcpServers": {\\n"proofworks": {\\n  "serverUrl": "${ORIGIN}/mcp"\\n}\\n// }'},
-    cursor:{name:'cursor',code:
-'// .cursor/mcp.json  →  "mcpServers": {\\n"proofworks": {\\n  "url": "${ORIGIN}/mcp"\\n}\\n// }'}
-  };
-
-  var cur='claude';
-  function renderInstall(){
-    var a=installs[cur];
-    document.getElementById('agentName').textContent=a.name;
-    document.getElementById('installCode').textContent=a.code;
-    var pills=document.querySelectorAll('.agent-pill');
-    pills.forEach(function(p){p.classList.toggle('active',p.dataset.agent===cur);});
-  }
-  document.getElementById('agentList').addEventListener('click',function(e){
-    var p=e.target.closest('.agent-pill'); if(!p) return;
-    cur=p.dataset.agent; renderInstall();
-  });
-  document.getElementById('copyInstall').addEventListener('click',function(){
-    var txt=installs[cur].code; navigator.clipboard.writeText(txt).then(function(){
-      var b=this; b.textContent='Copied ✓'; setTimeout(function(){b.textContent='Copy';},1200);
-    }.bind(this)).catch(function(){});
-  });
-
-  // ---- live verdict demo ----
-  var demoBtn=document.getElementById('demoBtn'),demoIn=document.getElementById('demoInput'),demoOut=document.getElementById('demoOut'),spin=document.getElementById('demoSpin');
-
-  function esc(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML;}
-
-  function symFor(v){return v==='confirmed'?'✓':(v==='refuted'?'✗':v==='no_source'||v==='unverifiable'?'—':v==='partial'?'~':'✓');}
-  function clsFor(v){
-    if(v==='refuted')return 'v-refuted';
-    if(v==='confirmed'||v==='unsupported')return v==='unsupported'?'v-unver':(v==='confirmed'?'v-certain':'v-unver');
-    if(v==='supported'||v==='partial')return 'v-source';
-    return 'v-unver';
-  }
-  function tagFor(v){
-    var map={'confirmed':'certain','refuted':'refuted','supported':'source-backed','partial':'source-backed','no_source':'unverifiable','unverifiable':'unverifiable','unsupported':'unverifiable'};
-    return map[v]||v;
-  }
-
-  function runDemo(cb){
-    spin.style.display='inline-block'; demoBtn.disabled=true;
-    fetch(ORIG+'/api/verify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ai_text:demoIn.value,sources:[]})})
-      .then(function(r){return r.json();})
-      .then(function(d){
-        var rows=(d.claims||[]).map(function(c){
-          var sym=symFor(c.verdict),cl=clsFor(c.verdict),tag=tagFor(c.verdict);
-          var extra='';
-          if(c.computed&&c.computed.result)extra=' — '+esc(String(c.computed.result));
-          if(c.source_url)extra=' · <a href="'+esc(c.source_url)+'" target="_blank" rel="noopener">source</a>';
-          return '<div class="verdict '+cl+'"><span class="sym">'+sym+'</span><span class="txt">'+esc(c.claim_text)+extra+'</span><span class="tag">'+tag+'</span></div>';
-        }).join('');
-        demoOut.style.display=(rows?'flex':'none');
-        demoOut.innerHTML=rows||'<div class="verdict v-unver"><span class="sym">—</span><span class="txt">No checkable claims in that text.</span><span class="tag">empty</span></div>';
-        if(cb)cb();
-      })
-      .catch(function(){
-        demoOut.style.display='flex';
-        demoOut.innerHTML='<div class="verdict v-unver"><span class="sym">!</span><span class="txt">Could not reach the oracle.</span><span class="tag">error</span></div>';
-        if(cb)cb();
-      });
-  }
-  demoBtn.addEventListener('click',function(){runDemo(function(){spin.style.display='none';demoBtn.disabled=false;});});
-  demoIn.addEventListener('keydown',function(e){if((e.key==='Enter'&&e.metaKey)||(e.key==='Enter'&&e.ctrlKey)){demoBtn.click();}});
+  // ---- copy the skill setup prompt ----
+    var skillBtn=document.getElementById('copySkill');
+    if(skillBtn)skillBtn.addEventListener('click',function(){
+      var txt=document.getElementById('skillPrompt').textContent.trim();
+      navigator.clipboard.writeText(txt).then(function(){
+        var b=this; b.textContent='Copied ✓'; setTimeout(function(){b.textContent='Copy';},1200);
+      }.bind(this)).catch(function(){});
+    });
 
   // ---- CTA copy-paste prompt ----
   var cpBtn=document.getElementById('copyPrompt');
@@ -660,9 +583,6 @@ BODY  <span class="st" style="color:#85d39d">{"claim": "Jan 1 2027 is a Monday"}
       var b=this; b.textContent='Copied ✓'; setTimeout(function(){b.textContent='Copy';},1200);
     }.bind(this)).catch(function(){});
   });
-
-  // run once on load if text present
-  if(demoIn.value.trim()){runDemo(function(){spin.style.display='none';demoBtn.disabled=false;});}
 })();
 </script>
 </body>
