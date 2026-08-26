@@ -83,10 +83,28 @@ written? Judge strictly — a source that merely passes near a topic does not
 support a specific assertion. Tag `supported` (you can name the supporting
 passage) or `unsupported`.
 
+Critical rule: **judge only against the fetched source text, never against your
+training knowledge.** Do not answer "what is the true fact?" from memory — the
+verification question is only "does THIS source support THIS claim?" If a source
+does not support the claim, the answer is `unsupported`, not a corrected fact.
+For example, if the draft says "The Eiffel Tower is in Miami" and the source only
+describes Miami, tag `unsupported`. Do not silently substitute "it's in Paris"
+from memory and then hunt for a Paris source — that launders a bad claim into a
+"supported" one.
+
 **5. Backfill (agent + helper).** For each `unsupported` claim, find one extra
-credible source that does support it, fetch it with `fetch_source.py`, and
-re-run steps 3–4 on it. If it now verifies, tag `verified` and ADD the new
-source to the citation. If the second source also fails, tag `exhausted`.
+credible source that does support the claim **as written**, fetch it with
+`fetch_source.py`, and re-run steps 3–4 on it. If it now verifies, tag
+`verified` and ADD the new source to the citation. If the second source also
+fails, tag `exhausted`.
+
+Backfill is **source-finding only — never claim-rewriting.** It finds a source to
+support the claim exactly as stated. If no source supports the claim as written,
+do not alter the claim to fit an available source. If you believe the claim is
+factually wrong, that is a **correction**, not a backfill: leave the claim tagged
+`unsupported`, and note the correction you would propose separately (e.g. "the
+draft says Miami; sources place the Eiffel Tower in Paris") so the user decides.
+An auto-applied correction is smuggled-in verification.
 
 **6. Report.** Emit the annotated draft: every claim tagged `verified`,
 `unsupported`, or `exhausted`, each verified claim showing the source passage
@@ -115,6 +133,10 @@ reference list.
 - **`exhausted` is a real outcome.** After two independent sources fail to back
   a claim, report it as unsupported. Do not keep hunting to force a green check,
   and do not soften the wording to make it pass.
+- **Do not launder a claim through memory.** The semantic pass and backfill must
+  not rewrite a claim to what you already believe and then "verify" the rewrite.
+  Judge and source the claim exactly as written; flag proposed corrections
+  separately for the user.
 
 ## Verification
 
