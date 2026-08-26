@@ -1,10 +1,20 @@
 # Proofworks — deterministic verification oracle (MCP-first)
 
 Turn "here's an AI answer + sources" into a claim-by-claim **verdict** with a
-**confidence ladder**. Proofworks is an **MCP server** — the product surface is
-**onboarding your AI agent** to call it, not a consumer web app. It computes
-arithmetic/ratios/dates exactly, and matches everything else against real
-sources. No LLM grades an LLM; computation and sources are the judge.
+**confidence ladder**. It computes arithmetic/ratios/dates exactly, and matches
+everything else against real sources. No LLM grades an LLM; computation and
+sources are the judge.
+
+> **New: the client-side research pivot.** The `skill/proofworks-verifier/`
+> directory is a self-hosted **verify-and-backfill loop** (an agent skill + two
+> stdlib helper scripts) that runs 100% client-side. When an agent produces a
+> cited answer, it fetches every source, checks each claim against it (literal
+> first, then judged), and backfills an extra source for anything unsupported.
+> Nothing leaves your machine. See `skill/proofworks-verifier/SKILL.md`.
+
+The hosted `sentrylab.app` service ([MCP endpoint](/mcp),
+[onboard prompt](/agent-setup/prompt.md)) is the optional server form of the
+same idea.
 
 There is no account, signup, or pricing — the server is public and free.
 
