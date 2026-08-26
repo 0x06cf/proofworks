@@ -17,15 +17,3 @@ workers_dev = true
 # --- Observability ---
 [observability]
 enabled = true
-
-# --- KV (cache) ---
-[[kv_namespaces]]
-binding = "CACHE_KV"
-id = "2644f6e9e89c44acb6e0c4370e9d5fb3"
-
-# --- D1 (database) ---
-[[d1_databases]]
-binding = "DB"
-database_name = "proofworks-db"
-database_id = "d164507a-1582-4b38-9ba4-8b78c9c62cff"
-migrations_dir = "migrations"

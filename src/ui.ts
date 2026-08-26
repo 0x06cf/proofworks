@@ -1,25 +1,24 @@
 // ui.ts
-// Proofworks — a research tool that verifies its own citations, MCP-first.
-// `/` serves a full marketing landing (hero + live verdict demo + offer +
-// integrations + use cases + FAQ + CTA). No SPA, no human-verification jury.
+// Proofworks — a research skill that verifies its own citations.
+// `/` serves a full marketing landing (hero + demo of the skill's output + offer +
+// integrations + use cases + FAQ + CTA). No API, no MCP, no SPA — just the landing.
 // Visual system: Vercel-style precision (Geist, shadow-as-border, #171717/#fff)
 // with a "verdict/proof" accent set: certain=green, source-backed=blue,
 // unverifiable=gray. Mono voice for verdicts and code.
 
 export const ORIGIN = 'https://sentrylab.app';
-const CF_UA = 'Proofworks/0.2 (oracle; contact: none)';
 
 const LANDING = `<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Proofworks is a research tool for AI agents. It gathers sources, cites them, then verifies each citation actually supports the claim — computed, matched to a source, or admitted unverifiable.">
+<meta name="description" content="Proofworks is a research skill for AI agents. It gathers sources, cites them, then verifies each citation actually supports the claim — matched to a source, or admitted unverifiable.">
 <link rel="canonical" href="${ORIGIN}/">
 <meta property="og:type" content="website">
 <meta property="og:url" content="${ORIGIN}/">
 <meta property="og:title" content="Proofworks — let your agent prove it">
-<meta property="og:description" content="A research tool for AI agents that verifies its own citations. certain · source-backed · unverifiable. Never a fake yes.">
+<meta property="og:description" content="A research skill for AI agents that verifies its own citations. verified · unsupported · unverifiable. Never a fake yes.">
 <title>Proofworks — let your agent prove it</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -252,7 +251,7 @@ footer a:hover{color:var(--ink)}
 <body>
 
 <!-- announcement top bar -->
-<div class="topbar"><div class="topbar-inner"><span class="dot"></span>Proofworks is live as a public MCP server. <a href="${ORIGIN}/agent-setup/prompt.md">Onboard your agent →</a></div></div>
+<div class="topbar"><div class="topbar-inner"><span class="dot"></span>Proofworks is a research skill — it verifies its own citations, whichever agent you use. <a href="${ORIGIN}/agent-setup/prompt.md">Adopt the skill →</a></div></div>
 
 <!-- nav -->
 <nav>
@@ -276,13 +275,13 @@ footer a:hover{color:var(--ink)}
 <!-- HERO -->
 <section class="hero" style="padding-top:64px">
   <div class="container">
-    <div class="kicker"><span>research tool</span> · <b>self-verifying</b> · <span>MCP server</span></div>
+    <div class="kicker"><span>research skill</span> · <b>self-verifying</b> · <span>works with any agent</span></div>
     <h1>Don't let the agent hand you <span class="strike">citations it never checked</span><br>make it <span class="ok">prove</span> its sources.</h1>
     <p class="hero-sub">Proofworks is a research tool for AI agents: it gathers sources, cites them, then <b>checks its own work</b> — confirming each citation actually supports the claim before you trust the answer. <a href="#offer">Arithmetic and dates are computed</a>. Everything else is matched to a real source. What can't be proven is marked <b class="mono" style="color:var(--unver)">unverifiable</b>, not passed off as fact.</p>
     <div class="hero-cta">
       <a class="btn" href="#install">Onboard your agent</a>
       <a class="btn ghost" href="#demo" id="tryInline">See a verified answer</a>
-      <div class="note">No signup, no credit card, no auth. Public server.</div>
+      <div class="note">No account, no API key, no hosted server — it runs on your own agent and your own model.</div>
     </div>
 
     <!-- live verdict demo -->
@@ -295,7 +294,7 @@ footer a:hover{color:var(--ink)}
         <div class="demo-body demo-static">
           <div class="demo-row">
             <div class="demo-q">"Cloudflare's D1 gives you a serverless SQL database."<span class="src">← cited · developers.cloudflare.com/d1</span></div>
-            <div class="verdict v-source"><span class="sym">✓</span><span class="txt">source-backed — exact phrase found in the fetched page</span><span class="tag">supported</span></div>
+            <div class="verdict v-source"><span class="sym">✓</span><span class="txt">verified — the exact phrase is found in the fetched page</span><span class="tag">verified</span></div>
           </div>
           <div class="demo-row">
             <div class="demo-q">"D1 charges 5¢ per million rows read."<span class="src">← cited · developers.cloudflare.com/d1/pricing</span></div>
@@ -318,26 +317,26 @@ footer a:hover{color:var(--ink)}
     <div class="sec-head">
       <div class="eyebrow">What we offer</div>
       <h2>Every citation gets checked before you trust the answer</h2>
-      <p>The point isn't only to say "true" or "false". The point is to show <em>why</em> — and to refuse to fake it when neither a computation nor a source backs a claim.</p>
+      <p>The point isn't only to say "true" or "false". The point is to show <em>why</em> — and to refuse to fake it when neither a source nor a computation backs a claim.</p>
     </div>
     <div class="offer-grid">
       <div class="offer-card oc-certain">
-        <span class="lvl">Certain · computed</span>
-        <h3>Deterministic math</h3>
-        <p>Arithmetic, percentages, and day-of-week are computed exactly. A wrong answer isn't rated, it's refuted.</p>
-        <div class="eg">"15% of 1200 is 200"<br><span class="no">✗ refuted</span> · 180</div>
+        <span class="lvl">Verified · passage found</span>
+        <h3>Checked against the source</h3>
+        <p>The exact quote or number is fetched from the cited source and shown to be there — with the passage that backs it. A claim either checks out or it doesn't.</p>
+        <div class="eg">"Workers has a free tier"<br><span class="ok">✓ verified</span> · the passage appears in the fetched docs</div>
       </div>
       <div class="offer-card oc-source">
-        <span class="lvl">Source-backed · matched</span>
-        <h3>Checked against sources</h3>
-        <p>Claims that aren't computable are matched against a real citation. You get the verdict and the passage it rests on.</p>
-        <div class="eg">"Workers has a free tier"<br><span class="ok">✓ supported</span> + source</div>
+        <span class="lvl">Strict judgment</span>
+        <h3>Reads the passage, doesn't guess</h3>
+        <p>When a claim isn't a literal match, the skill reads the fetched source text and asks only: does this passage support the claim as written? It never answers from memory and never rewrites the claim.</p>
+        <div class="eg">"15% of 1200 is 200"<br><span class="no">✗ unsupported</span> · the source says 180</div>
       </div>
       <div class="offer-card oc-unver">
         <span class="lvl">Unverifiable · refused</span>
         <h3>It won't fake confidence</h3>
-        <p>No source, no computation, no claim. The honest answer is <b>unverifiable</b>, never a confident guess.</p>
-        <div class="eg">"The Eiffel Tower is in Miami"<br><span class="no">— unverifiable</span>, no source · flags a correction to check</div>
+        <p>No source, no computation, no claim. The honest answer is <b>unverifiable</b> — and it flags a likely correction for you to check, rather than passing off a guess as fact.</p>
+        <div class="eg">"The Eiffel Tower is in Miami"<br><span class="no">— unverifiable</span>, no source · suggests where it actually is</div>
       </div>
     </div>
   </div>
@@ -388,7 +387,7 @@ footer a:hover{color:var(--ink)}
       <div class="uc-card ucdark">
         <span class="uc-verb">Caught before shipping</span>
         <h3>Arithmetic slips</h3>
-        <p>Agents miss decimals, flip signs, round oddly. Run the figure through claim_check before you trust it in an answer or a dashboard.</p>
+        <p>Agents miss decimals, flip signs, round oddly. Run the figure through the skill's check before you trust it in an answer or a dashboard.</p>
         <div class="ex">"The total is 1,248.60" → asks Proofworks what 42 × 29.73 is.</div>
       </div>
       <div class="uc-card">
@@ -406,7 +405,7 @@ footer a:hover{color:var(--ink)}
       <div class="uc-card ucdark">
         <span class="uc-verb">Composed pipelines</span>
         <h3>Agent-to-agent checks</h3>
-        <p>A downstream agent calls claim_check on an upstream agent's output. Verification becomes a step in the pipeline, not a hope.</p>
+        <p>A downstream agent runs the skill on an upstream agent's cited output. Verification becomes a step in the pipeline, not a hope.</p>
         <div class="ex">Planner hands off → verifier runs each step → only verified work proceeds.</div>
       </div>
     </div>
@@ -420,22 +419,23 @@ footer a:hover{color:var(--ink)}
       <div>
         <div class="eyebrow">Why it works</div>
         <h2>Research, then check the research</h2>
-        <p class="sub">Your agent gathers sources and cites them; Proofworks is the step that <b>checks its own work</b>. A computation either computes or it doesn't. A source either supports the claim or it doesn't. When neither applies, it says so instead of wallpapering over the gap. That step is what makes the citations you can't check yourself worth trusting.</p>
+        <p class="sub">Your agent gathers sources and cites them; Proofworks is the step that <b>checks its own work</b>. The exact quote or number either appears in the fetched source or it doesn't. When it doesn't, a strict read of the passage decides. When neither applies, it says so instead of wallpapering over the gap. That step is what makes the citations you can't check yourself worth trusting.</p>
         <div class="ladder">
-          <div class="row"><span class="tag ok mono">certain</span><span>computed from the claim itself</span></div>
-          <div class="row"><span class="tag zz mono">source-backed</span><span>matched to a real citation</span></div>
+          <div class="row"><span class="tag ok mono">verified</span><span>the passage in the fetched source backs the claim</span></div>
+          <div class="row"><span class="tag zz mono">unsupported</span><span>no source backs the claim as written</span></div>
           <div class="row"><span class="tag no mono">unverifiable</span><span>honest refusal to guess</span></div>
         </div>
       </div>
       <div class="codecol">
-        <pre><span class="cm" style="color:#5b6470">// claim_check — the core tool</span>
-BODY  <span class="st" style="color:#85d39d">{"claim": "Jan 1 2027 is a Monday"}</span>
-      <span class="fn" style="color:#f0a0a0">{"source_url": null}</span>
+        <pre><span class="cm" style="color:#5b6470">// skill run — a cited claim, checked against its source</span>
+BODY  <span class="st" style="color:#85d39d">{"claim": "Jan 1 2027 is a Monday",</span>
+      <span class="fn" style="color:#f0a0a0"> "cited_url": "https://example.com/calendar",</span>
+      <span class="fn" style="color:#f0a0a0"> "quote": "Jan 1 2027"}</span>
 
-<span style="color:#79b8ff">RESP</span>  <span class="st" style="color:#85d39d">{"verdict": "refuted",</span>
-      <span class="st" style="color:#85d39d"> "confidence": "certain",</span>
-      <span class="st" style="color:#85d39d"> "computed": {"result": "friday",</span>
-      <span class="st" style="color:#85d39d">              "claimed": "monday"}}</span></pre>
+<span style="color:#79b8ff">OUT</span>   <span class="st" style="color:#85d39d">{"tag": "verified",</span>
+      <span class="st" style="color:#85d39d"> "matched_fragment": "January 1, 2027 is a Friday",</span>
+      <span class="st" style="color:#85d39d"> "source_url": "https://example.com/calendar",</span>
+      <span class="st" style="color:#85d39d"> "correction": null}</span></pre>
       </div>
     </div>
   </div>
@@ -451,15 +451,15 @@ BODY  <span class="st" style="color:#85d39d">{"claim": "Jan 1 2027 is a Monday"}
     <div class="faq">
       <details open>
         <summary>What does Proofworks actually check?</summary>
-        <div class="ans">It verifies claims along three paths. Arithmetic, percentages, and day-of-week are computed directly (the <b class="mono">certain</b> tier). Claims that aren't computable are matched against sources you pass in (the <b class="mono">source-backed</b> tier). When neither applies, it returns <b class="mono">unverifiable</b> rather than invent a result.</div>
+        <div class="ans">For every claim that cites a source, it verifies that citation. A deterministic first pass asks whether the exact quote or number appears in the fetched source — <b class="mono">verified</b> with the supporting passage. Claims that don't literally match get a strict read of the passage: does it support the claim as written? If nothing backs it, the result is <b class="mono">unsupported</b>. When there's no claim to verify, <b class="mono">unverifiable</b> rather than a guess.</div>
       </details>
       <details>
         <summary>Which agents can use it?</summary>
-        <div class="ans">Anything that speaks MCP over HTTP, which covers Claude Code, Codex, OpenCode, Windsurf, Cursor, GitHub Copilot, and a custom agent via the REST endpoints. The setup prompt at <span class="mono">/agent-setup/prompt.md</span> walks an agent through connecting itself.</div>
+        <div class="ans">Any agent that can fetch a URL from you and run a skill — Claude Code, Codex, OpenCode, Windsurf, Cursor, GitHub Copilot, or a custom agent. The setup prompt at <span class="mono">/agent-setup/prompt.md</span> <b>is</b> the skill: paste it in and the agent adopts the verify-and-backfill loop itself, on its own machine.</div>
       </details>
       <details>
         <summary>Is it a paid service? Is there a free tier?</summary>
-        <div class="ans">It's a free public server, no account and no pricing. The goal is to be a neutral verification layer that any agent can reach, the way it reaches the network.</div>
+        <div class="ans">It runs client-side on your own agent and your own model, driven by the open-source skill in the repo. Nothing to pay for, no account, no server round-trip. Your research never leaves your machine.</div>
       </details>
       <details>
         <summary>How does the verifying step avoid trusting a judge?</summary>
@@ -482,23 +482,18 @@ BODY  <span class="st" style="color:#85d39d">{"claim": "Jan 1 2027 is a Monday"}
     <div class="res-grid">
       <a class="res-card" href="${ORIGIN}/agent-setup/prompt.md">
         <div class="rt">SETUP</div><h3>Setup prompt</h3>
-        <p>Self-install instructions an agent follows to connect to the MCP server. Markdown.</p>
+        <p>The skill in one paste-able line. Any agent fetches it and adopts the verify-and-backfill loop. Markdown.</p>
         <span class="mono">/agent-setup/prompt.md</span>
+      </a>
+      <a class="res-card" href="https://github.com/0x06cf/proofworks" target="_blank" rel="noopener">
+        <div class="rt">SKILL</div><h3>Source + skill</h3>
+        <p>The full skill: SKILL.md, the loop protocol, and the fetch + presence-check helper scripts. Open source.</p>
+        <span class="mono">github.com/0x06cf/proofworks</span>
       </a>
       <a class="res-card" href="${ORIGIN}/llms.txt">
         <div class="rt">LLMS</div><h3>llms.txt</h3>
-        <p>AI content signal; a map of the API for agent crawlers. Plain text.</p>
+        <p>AI content signal; a map of the skill for agent crawlers. Plain text.</p>
         <span class="mono">/llms.txt</span>
-      </a>
-      <a class="res-card" href="${ORIGIN}/openapi.json">
-        <div class="rt">API</div><h3>OpenAPI spec</h3>
-        <p>Machine-readable description of every REST endpoint. JSON.</p>
-        <span class="mono">/openapi.json</span>
-      </a>
-      <a class="res-card" href="${ORIGIN}/mcp.json">
-        <div class="rt">MCP</div><h3>MCP server manifest</h3>
-        <p>Server metadata + the tool list for MCP-aware clients. JSON.</p>
-        <span class="mono">/mcp.json</span>
       </a>
       <a class="res-card" href="${ORIGIN}/robots.txt">
         <div class="rt">SPEC</div><h3>robots.txt</h3>
@@ -527,9 +522,9 @@ BODY  <span class="st" style="color:#85d39d">{"claim": "Jan 1 2027 is a Monday"}
       <span>&lt;paste this into your agent&gt;</span>
       <button id="copyPrompt">Copy</button>
     </div>
-    <pre>Fetch and execute the setup instructions for the<br>Proofworks MCP server from @url:\`${ORIGIN}/agent-setup/prompt.md\`</pre>
+    <pre>Fetch and execute the setup instructions for the<br>Proofworks skill from @url:\`${ORIGIN}/agent-setup/prompt.md\`</pre>
   </div>
-  <div class="status"><span class="dot"></span>all systems online&nbsp;·&nbsp;no auth&nbsp;·&nbsp;SOC&#8209;2 ready on request</div>
+  <div class="status"><span class="dot"></span>open source&nbsp;·&nbsp;MIT&nbsp;·&nbsp;runs locally on your agent</div>
 </section>
 
 <!-- FOOTER -->
@@ -537,19 +532,19 @@ BODY  <span class="st" style="color:#85d39d">{"claim": "Jan 1 2027 is a Monday"}
   <div class="foot-grid">
     <div class="foot-brand">
       <a class="brand" href="${ORIGIN}/"><span class="mark">✓</span>Proofworks</a>
-      <p>A research tool your agent uses to verify its own citations. Let it prove the sources before you trust the answer.</p>
+      <p>A research skill your agent uses to verify its own citations. Let it prove the sources before you trust the answer.</p>
     </div>
     <div>
       <h4>Product</h4>
-      <ul><li><a href="${ORIGIN}/agent-setup/prompt.md">Setup prompt</a></li><li><a href="#offer">The ladder</a></li><li><a href="${ORIGIN}/openapi.json">Docs</a></li><li><a href="${ORIGIN}/llms.txt">llms.txt</a></li></ul>
+      <ul><li><a href="${ORIGIN}/agent-setup/prompt.md">Setup prompt</a></li><li><a href="#offer">The ladder</a></li><li><a href="#demo">Demo</a></li><li><a href="${ORIGIN}/llms.txt">llms.txt</a></li></ul>
     </div>
     <div>
       <h4>Developers</h4>
-      <ul><li><a href="${ORIGIN}/openapi.json">OpenAPI</a></li><li><a href="${ORIGIN}/mcp.json">MCP manifest</a></li><li><a href="#use-cases">Use cases</a></li><li><a href="#integrations">Agent setup</a></li></ul>
+      <ul><li><a href="https://github.com/0x06cf/proofworks" target="_blank" rel="noopener">Source + skill</a></li><li><a href="#use-cases">Use cases</a></li><li><a href="#integrations">Agent setup</a></li><li><a href="#faq">FAQ</a></li></ul>
     </div>
     <div>
       <h4>Specs</h4>
-      <ul><li><a href="${ORIGIN}/robots.txt">robots.txt</a></li><li><a href="${ORIGIN}/sitemap.xml">sitemap.xml</a></li><li><a href="${ORIGIN}/.well-known/ai-access">ai-access</a></li><li><a href="${ORIGIN}/.well-known/mcp.json">mcp.json</a></li></ul>
+      <ul><li><a href="${ORIGIN}/robots.txt">robots.txt</a></li><li><a href="${ORIGIN}/sitemap.xml">sitemap.xml</a></li><li><a href="${ORIGIN}/.well-known/ai-access">ai-access</a></li><li><a href="https://github.com/0x06cf/proofworks" target="_blank" rel="noopener">license</a></li></ul>
     </div>
     <div>
       <h4>Meta</h4>
@@ -588,15 +583,9 @@ BODY  <span class="st" style="color:#85d39d">{"claim": "Jan 1 2027 is a Monday"}
 </body>
 </html>`;
 
-import type { Env } from './db';
-
-export async function handleUi(req: Request, env: Env, url: URL): Promise<Response> {
+export async function handleUi(req: Request, _env: unknown, url: URL): Promise<Response> {
   if (url.pathname === '/' || url.pathname === '') {
     return new Response(LANDING, { headers: { 'Content-Type': 'text/html; charset=utf-8' } });
   }
-  return json({ error: 'not found' }, 404);
-}
-
-function json(body: unknown, status = 200): Response {
-  return new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } });
+  return new Response('Not Found', { status: 404 });
 }

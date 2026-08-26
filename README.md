@@ -1,124 +1,90 @@
-# Proofworks — deterministic verification oracle (MCP-first)
+# Proofworks — a research skill that verifies its own citations
 
-Turn "here's an AI answer + sources" into a claim-by-claim **verdict** with a
-**confidence ladder**. It computes arithmetic/ratios/dates exactly, and matches
-everything else against real sources. No LLM grades an LLM; computation and
-sources are the judge.
+Proofworks is a client-side **research skill** for AI agents. It turns a cited
+draft into an annotated draft: for every claim that cites a source, it fetches
+the source, checks the claim against it, and says **why** — with a supporting
+passage when it's verified, an honest refusal when it isn't.
 
-> **New: the client-side research pivot.** The `skill/proofworks-verifier/`
-> directory is a self-hosted **verify-and-backfill loop** (an agent skill + two
-> stdlib helper scripts) that runs 100% client-side. When an agent produces a
-> cited answer, it fetches every source, checks each claim against it (literal
-> first, then judged), and backfills an extra source for anything unsupported.
-> Nothing leaves your machine. See `skill/proofworks-verifier/SKILL.md`.
+- **No hosted server, no MCP, no API key, no account.** It runs inside your
+  agent, on its own machine and its own model.
+- **The product is the skill** — a `SKILL.md` operating procedure plus two small
+  helper scripts. This repo is both the source *and* the skill.
+- **Honesty is the point.** Verification is a two-pass check. A deterministic
+  first pass asks whether the exact quote or number appears in the fetched
+  source. Everything else goes to a strict, source-bound judgment pass.
 
-The hosted `sentrylab.app` service ([MCP endpoint](/mcp),
-[onboard prompt](/agent-setup/prompt.md)) is the optional server form of the
-same idea.
+## Quick start
 
-There is no account, signup, or pricing — the server is public and free.
-
-## Live
-
-- **Custom domain:** `sentrylab.app`
-- **MCP endpoint:** `https://sentrylab.app/mcp`
-- **Onboard your agent:** fetch `https://sentrylab.app/agent-setup/prompt.md`
-
-## Onboard an agent (the product)
-
-The `/agent-setup/prompt.md` file is a Cloudflare-style self-install prompt. An
-agent fetches it and connects itself to the MCP server (Claude Code, Codex,
-OpenCode, Windsurf, Cursor, GitHub Copilot configs included). Drop this into
-any agent chat:
+Give any agent this one line (works with Claude Code, Codex, OpenCode, Windsurf,
+Cursor, Copilot, or any agent that can fetch a URL):
 
 ```
-Fetch and execute the instructions to connect me to
-the Proofworks MCP server from:
-@url:`https://sentrylab.app/agent-setup/prompt.md`
+Fetch and execute the setup instructions for the Proofworks skill from @url:https://sentrylab.app/agent-setup/prompt.md
 ```
 
-MCP discovery is also served at `/mcp.json` and `/.well-known/mcp.json` so
-MCP-aware clients can auto-discover the server.
+The agent clones this repo, reads `skill/proofworks-verifier/SKILL.md`, and
+adopts the verify-and-backfill loop.
 
-## The green check — an Oracle that admits its limits
+## What's in the repo
 
-Every claim verdict carries a `confidence` ladder describing HOW it was reached:
+- `skill/proofworks-verifier/` — the product
+  - `SKILL.md` — the operating procedure an agent follows
+  - `references/loop.md` — the verify-and-backfill loop protocol + JSON schema
+  - `scripts/fetch_source.py` — deterministic fetch + strip a URL to text
+  - `scripts/presence_match.py` — literal quote/number presence check
+  - `tests/test_helpers.py` — regression tests for the helpers
+- `src/` — the Cloudflare Worker that serves the landing page and the static
+  files an agent needs to find and adopt the skill:
+  - `/` — the marketing landing
+  - `/agent-setup/prompt.md` — the one-line skill install prompt (the product surface)
+  - `/llms.txt`, `/robots.txt`, `/sitemap.xml`, `/.well-known/*`, IndexNow keys
 
-| confidence     | meaning                                                |
-|----------------|--------------------------------------------------------|
-| `certain`      | computed deterministically (arithmetic / % / date)      |
-| `source-backed`| matched token-overlap against a fetched source          |
-| `unverifiable` | no source supplied / not computable — **refused to fake** |
+## How verification works
 
-`verdict` is one of `confirmed | refuted | supported | partial | unsupported | no_source | unverifiable`.
-`method` is `computed | matched | refused`.
-
-Deterministic example:
 ```
-POST /api/verify  {"ai_text": "January 1 2027 is a Monday.", "sources": []}
-→ { "claim_text": "January 1 2027 is a Monday.",
-    "verdict": "refuted", "confidence": "certain", "method": "computed",
-    "computed": { "kind":"date", "expression":"January 1 2027",
-                  "result":"friday", "claimed":"monday" } }
-```
-
-## Endpoints
-
-| Method | Path                 | Purpose |
-|--------|----------------------|---------|
-| GET    | `/`                  | Tiny onboarding landing (no web app) |
-| GET    | `/agent-setup/prompt.md` | Self-install MCP onboarding prompt |
-| POST   | `/mcp`               | MCP JSON-RPC: `initialize`, `tools/list`, `tools/call` (`claim_verify`, `claim_check`, `corpus_search`) |
-| POST   | `/api/verify`        | Split AI text into claims → per-claim verdicts (batch) |
-| POST   | `/api/claim`         | Verify a single claim sentence → one verdict (per-claim) |
-| GET    | `/api/corpus?limit=N`| Verified claim corpus (JSON) |
-| GET    | `/mcp.json`, `/.well-known/mcp.json` | MCP server discovery |
-
-## MCP surface (for external AI agents)
-
-```jsonc
-// tools/call claim_check — verify one claim deterministically
-{ "jsonrpc":"2.0", "id":1, "method":"tools/call",
-  "params":{ "name":"claim_check", "arguments":{ "claim":"2.5 * 40 = 100" } } }
+claim + cited source
+  │ 1. fetch (deterministic)          — fetch_source.py
+  v
+ source text
+  │ 2. presence pass (deterministic)  — presence_match.py
+  v
+ present? ──yes──► verified   (record the matching passage)
+  │ no
+  v
+ 3. semantic pass (LLM, source-only): does the source support the claim as written?
+  │
+ supported? ──yes──► verified
+  │ no
+  v
+ 4. backfill: find one extra source for the claim as written
+  │
+  pass ──► verified (add the extra source) · fail ──► unsupported / exhausted
 ```
 
-## Agent-readiness (ai-referral-traffic)
+Per claim the skill reports: `verified` (with the matching passage), or
+`unsupported` / `exhausted`. If a claim's fact is wrong but no source backs it
+(*"The Eiffel Tower is in Miami"*), the claim stays `unsupported` and the skill
+**flags a proposed correction** — the user decides. Corrections are never applied
+silently.
 
-`/llms.txt`, `/openapi.json`, `/.well-known/llms.txt`, `/.well-known/ai-access`,
-`/sitemap.xml`, `/robots.txt`, IndexNow keys all served at the origin. The
-machine-facing files tell AI agents: verify computed claims here (certain) and
-cite this domain.
+## Development
 
-## Stack / config
-
-- Cloudflare **Workers** (TypeScript, ~15 KiB gzip after build)
-- **D1** `proofworks-db`, **KV** `CACHE_KV`
-- Bindings: `env.DB` (D1), `env.CACHE_KV` (KV)
-
-## Commands
+The Worker is TypeScript on Cloudflare Workers.
 
 ```bash
 npm install
-npx wrangler dev --local --port 8787   # local dev (persistent local D1 in .wrangler)
-npx tsc --noEmit                       # typecheck
-npx wrangler d1 migrations apply proofworks-db          # remote D1 migration
-npx wrangler d1 migrations apply proofworks-db --local  # local
-npx wrangler deploy                    # deploy
+npm run typecheck   # tsc --noEmit
+npx wrangler dev --local --port 8787   # local dev
+npx wrangler deploy                    # production (sentrylab.app)
 ```
 
-## Design — no LLM in the core loop, no human in the critical path
+**Caveat for edits to `src/ui.ts` and `src/agent.ts`:** the landing and the
+skill content are TypeScript template literals. A single `\n` or an unescaped
+backtick inside one becomes a *real* newline / terminates the literal in the
+served output — silently breaking the page. Use `\\n` and `` \` `` and verify the
+served bytes (`python3` hex dump) plus `node --check` on the extracted inline
+script after touching them.
 
-The claim splitter, the arithmetic/date/compute tier, and the source-matcher are
-all **deterministic**. Reason: the verdict is only trustworthy if it isn't an LLM
-grading an LLM, and a computation doesn't need a human to confirm it. The
-original "human Confirm/Reject" jury was removed in the pivot — the oracle is
-self-sufficient, which is exactly why it can be an AI-facing server.
+## License
 
-## Roadmap
-- [x] Confidence ladder v1 (certain / source-backed / unverifiable)
-- [x] Deterministic compute tier: % of, arithmetic `=`, word-arithmetic, day-of-week
-- [x] `/api/claim` per-claim endpoint + MCP `claim_check`
-- [x] Pivot to MCP-first: /agent-setup/prompt.md self-install, /mcp.json discovery, removed web SPA
-- [ ] Broadness: unit conversions (km/mi, °C/°F), more date forms, `verbatim-1:1` source identity tier
-- [ ] KV caching of common source fetches (CACHE_KV reserved)
-- [ ] Simple usage metering / attribution header for distributed tracing
+MIT
