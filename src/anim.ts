@@ -216,3 +216,122 @@ export const ANIM_JS = `
   onScroll();
 })();
 `;
+
+
+export const GLASS_CSS = `
+/* Proofworks landing - iOS 26 Liquid Glass layer (/glass.css)
+ * Frosted translucent panels, rim-light borders, specular sheen, over a subtle
+ * ambient aurora so the blur reads as glass. Loaded after ui.ts <style> so it
+ * overrides the flat white cards. Kept in anim.ts as GLASS_CSS (safe template
+ * literal, no escaping hazards). Respects prefers-reduced-motion.
+ */
+
+/* ---------- 1. ambient aurora backdrop (what the glass blurs) ---------- */
+/* Rendered as a real fixed-position element (like pw-spotlight) so it paints
+   reliably in every renderer — CSS backgrounds on html/body were unreliable. */
+.glass-on .pw-aurora{
+  position:fixed; inset:0; z-index:-1; pointer-events:none;
+  background:
+    radial-gradient(55% 45% at 14% 6%,   rgba(10,114,239,.13), transparent 68%),
+    radial-gradient(48% 42% at 86% 12%,  rgba(18,128,92,.15), transparent 68%),
+    radial-gradient(62% 52% at 50% 100%, rgba(122,128,255,.11), transparent 70%);
+  background-color:#eef2f7;
+}
+.glass-on body{
+  position:relative;            /* establish stacking context so the -1 aurora stays behind content */
+  background:transparent !important;
+}
+
+/* ---------- 2. frosted glass surface (light) ---------- */
+.glass-on .offer-card,
+.glass-on .num,
+.glass-on .uc-card:not(.ucdark),
+.glass-on .res-card,
+.glass-on .demo-card{
+  background:linear-gradient(180deg, rgba(255,255,255,.62), rgba(255,255,255,.32));
+  backdrop-filter:blur(18px) saturate(165%);
+  -webkit-backdrop-filter:blur(18px) saturate(165%);
+  border:1px solid rgba(255,255,255,.55);
+  border-top-color:rgba(255,255,255,.9);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.7) inset,
+    0 1px 2px rgba(20,30,50,.04),
+    0 12px 34px -16px rgba(20,30,60,.28);
+  position:relative;
+  border-radius:18px;
+}
+/* specular sheen - diagonal glass reflection across each surface */
+.glass-on .offer-card::after,
+.glass-on .num::after,
+.glass-on .uc-card:not(.ucdark)::after,
+.glass-on .res-card::after,
+.glass-on .demo-card::after{
+  content:''; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+  background:linear-gradient(118deg, rgba(255,255,255,.42) 0%, rgba(255,255,255,.05) 34%, transparent 46%);
+  mix-blend-mode:screen;
+}
+
+/* lift + glow on hover stays, but on the glass surface */
+.glass-on .pw-lift:hover{ box-shadow:0 22px 50px -20px rgba(10,60,140,.35), 0 1px 0 rgba(255,255,255,.75) inset; }
+
+/* ---------- 3. dark glass (terminal-like surfaces) ---------- */
+.glass-on .uc-card.ucdark,
+.glass-on .codecol,
+.glass-on .install-box{
+  background:linear-gradient(180deg, rgba(22,26,32,.72), rgba(14,16,20,.85));
+  backdrop-filter:blur(20px) saturate(140%);
+  -webkit-backdrop-filter:blur(20px) saturate(140%);
+  border:1px solid rgba(255,255,255,.14);
+  border-top-color:rgba(255,255,255,.28);
+  box-shadow:0 1px 0 rgba(255,255,255,.18) inset, 0 24px 70px -40px rgba(0,0,0,.65);
+  position:relative;
+  border-radius:18px;
+}
+.glass-on .install-bar{ background:rgba(20,23,28,.55); }
+
+/* ---------- 4. nav glass ---------- */
+.glass-on nav{
+  background:rgba(255,255,255,.5);
+  backdrop-filter:blur(22px) saturate(170%) !important;
+  -webkit-backdrop-filter:blur(22px) saturate(170%);
+  border-bottom:1px solid rgba(255,255,255,.55);
+  box-shadow:0 1px 0 rgba(255,255,255,.6) inset, 0 2px 12px -6px rgba(20,30,60,.14);
+}
+.glass-on .topbar{
+  background:rgba(255,255,255,.35);
+  backdrop-filter:blur(12px) saturate(150%);
+  -webkit-backdrop-filter:blur(12px) saturate(150%);
+}
+
+/* ---------- 5. inner chips stay solid so glass-on-glass stays readable ---------- */
+.glass-on .verdict,
+.glass-on .offer-card .eg,
+.glass-on .uc-card .ex:not(.ucdark .ex){
+  background:rgba(255,255,255,.55);
+  backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);
+  box-shadow:0 1px 0 rgba(255,255,255,.5) inset, var(--line) 0 0 0 1px;
+  border-radius:10px;
+}
+
+/* ---------- 6. alternate/res section bands become subtle tint ---------- */
+.glass-on .res,
+.glass-on section.alt{
+  background:rgba(255,255,255,.22);
+}
+
+/* ---------- reduced-motion / no-backdrop-filter fallback ---------- */
+@media (prefers-reduced-motion: reduce){
+  .glass-on .offer-card::after,
+  .glass-on .num::after,
+  .glass-on .uc-card:not(.ucdark)::after,
+  .glass-on .res-card::after,
+  .glass-on .demo-card::after{ display:none; }
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))){
+  .glass-on .offer-card, .glass-on .num, .glass-on .uc-card,
+  .glass-on .res-card, .glass-on .demo-card, .glass-on nav{
+    background:rgba(255,255,255,.92);
+  }
+}
+`;
