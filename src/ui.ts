@@ -297,10 +297,10 @@ footer a:hover{color:var(--ink)}
       <div class="demo-card">
         <div class="demo-head">
           <span class="cir"></span><span class="cir"></span><span class="cir"></span>
-          <span class="title">proofworks — live oracle</span>
+          <span class="title">proofworks — deterministic math demo</span>
         </div>
         <div class="demo-body">
-          <textarea class="demo-input" id="demoInput" spellcheck="false">January 1 2027 is a Monday. 15% of 1200 is 180. The Eiffel Tower is in Miami.</textarea>
+          <textarea class="demo-input" id="demoInput" spellcheck="false" readonly aria-readonly="true">January 1 2027 is a Monday. 15% of 1200 is 180. The Eiffel Tower is in Miami.</textarea>
           <div class="demo-run">
             <button class="btn" id="demoBtn">Verify</button>
             <span class="spin" id="demoSpin"></span>
@@ -308,7 +308,7 @@ footer a:hover{color:var(--ink)}
           <div class="demo-out" id="demoOut"></div>
         </div>
       </div>
-      <div class="demo-hint">Runs on the live API. <button id="demoLoad">load a sample</button> or type a sentence with a number, a date, or a citation target.</div>
+      <div class="demo-hint">A fixed demo: it computes arithmetic and dates from the sample above. It does <b>not</b> research open questions or run your own claims.</div>
     </div>
   </div>
 </section>
@@ -611,13 +611,9 @@ BODY  <span class="st" style="color:#85d39d">{"claim": "Jan 1 2027 is a Monday"}
   });
 
   // ---- live verdict demo ----
-  var samples=["January 1 2027 is a Monday. 15% of 1200 is 180. The Eiffel Tower is in Miami.","2.5 * 40 equals 90.","64 divided by 8 is 8. December 25 2027 is a Saturday."];
-  var si=0,demoBtn=document.getElementById('demoBtn'),demoIn=document.getElementById('demoInput'),demoOut=document.getElementById('demoOut'),spin=document.getElementById('demoSpin');
-
-  document.getElementById('demoLoad').addEventListener('click',function(){ demoIn.value=samples[si++%samples.length]; });
+  var demoBtn=document.getElementById('demoBtn'),demoIn=document.getElementById('demoInput'),demoOut=document.getElementById('demoOut'),spin=document.getElementById('demoSpin');
 
   function esc(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML;}
-  function parts(text){return text.split(/(?<=[.!?])\s+(?=[A-Z0-9"'])/).map(s=>s.trim()).filter(Boolean);}
 
   function symFor(v){return v==='confirmed'?'✓':(v==='refuted'?'✗':v==='no_source'||v==='unverifiable'?'—':v==='partial'?'~':'✓');}
   function clsFor(v){
