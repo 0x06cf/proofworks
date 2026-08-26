@@ -32,12 +32,22 @@ export async function handleApi(req: Request, env: Env, url: URL): Promise<Respo
       const rows = await getVerifiedCorpus(env, limit);
       return cors(json(rows));
     }
+    case '/api/claim': {
+      // Per-claim verify: POST { claim, sources? } -> single immediate verdict.
+      if (req.method !== 'POST') return cors(json({ error: 'POST only' }, 405));
+      const body: any = await req.json().catch(() => null);
+      if (!body || typeof body.claim !== 'string' || !body.claim.trim()) {
+        return cors(json({ error: 'claim required' }, 400));
+      }
+      const sources = Array.isArray(body.sources) ? body.sources.map(String) : [];
+      const [claim] = await matchClaims([body.claim.trim()], sources);
+      return cors(json({ ...claim, id: null }));
+    }
     case '/api/verify': {
       if (req.method !== 'POST') return cors(json({ error: 'POST only' }, 405));
       const body: any = await req.json().catch(() => null);
       if (!body || typeof body.ai_text !== 'string') return cors(json({ error: 'ai_text required' }, 400));
-      await runVerify(env, body);
-      return cors(json({ ok: true }));
+      return cors(await runVerify(env, body));
     }
     default:
       return cors(new Response('Not found', { status: 404 }));
@@ -57,10 +67,12 @@ async function runVerify(env: Env, body: any) {
   const sources = Array.isArray(body?.sources) ? body.sources.map(String) : [];
   const claimTexts = extractClaims(aiText);
   const claims = await matchClaims(claimTexts, sources);
-  await createCheck(env, 1, aiText, claims);
+  const { checkId, claimIds } = await createCheck(env, 1, aiText, claims);
+  const withIds = claims.map((c, i) => ({ ...c, id: claimIds[i] }));
+  return json({ checkId, claims: withIds });
 }
 
-/** Minimal MCP tool methods: proofworks.verifyCheck, proofworks.listCorpus. */
+/** Minimal MCP tool methods: proofworks.claim_verify, proofworks.listCorpus. */
 async function handleMcpRequest(req: Request, env: Env): Promise<Response> {
   const body = await req.json().catch(() => null);
   if (!body || typeof body !== 'object') return json({ jsonrpc: '2.0', error: { code: -32700, message: 'Parse error' } });
@@ -71,7 +83,7 @@ async function handleMcpRequest(req: Request, env: Env): Promise<Response> {
     return json({
       jsonrpc: '2.0',
       id,
-      result: { protocolVersion: '2025-03-26', capabilities: { tools: {} }, serverInfo: { name: 'proofworks', version: '0.1.0' } },
+      result: { protocolVersion: '2025-03-26', capabilities: { tools: {} }, serverInfo: { name: 'proofworks', version: '0.2.0' } },
     });
   }
   if (method === 'tools/list') {
@@ -80,8 +92,9 @@ async function handleMcpRequest(req: Request, env: Env): Promise<Response> {
       id,
       result: {
         tools: [
-          { name: 'claim_verify', description: 'Check claims in AI text against sources and store a pending check for human review', inputSchema: { type: 'object', properties: { ai_text: { type: 'string' }, sources: { type: 'array', items: { type: 'string' } } }, required: ['ai_text'] } },
-          { name: 'corpus_search', description: 'Return human-verified claim corpus (what humans already confirmed)', inputSchema: { type: 'object', properties: { limit: { type: 'number' } } } },
+          { name: 'claim_verify', description: 'Verify claims in AI text against sources (or compute arithmetic) and return immediate claim-by-claim verdicts', inputSchema: { type: 'object', properties: { ai_text: { type: 'string' }, sources: { type: 'array', items: { type: 'string' } } }, required: ['ai_text'] } },
+          { name: 'claim_check', description: 'Verify a single claim sentence (computable or source-backed) and return one verdict', inputSchema: { type: 'object', properties: { claim: { type: 'string' }, sources: { type: 'array', items: { type: 'string' } } }, required: ['claim'] } },
+          { name: 'corpus_search', description: 'Return human-confirmed + source-backed claim corpus (what has already been verified)', inputSchema: { type: 'object', properties: { limit: { type: 'number' } } } },
         ],
       },
     });
@@ -90,8 +103,16 @@ async function handleMcpRequest(req: Request, env: Env): Promise<Response> {
     const tool = (body as any).params?.name ?? '';
     const args = (body as any).params?.arguments ?? {};
     if (tool === 'claim_verify') {
-      await runVerify(env, args);
-      return json({ jsonrpc: '2.0', id, result: { content: [{ type: 'text', text: 'Check submitted for human review' }] } });
+      const res = await runVerify(env, args);
+      const data = await res.json();
+      return json({ jsonrpc: '2.0', id, result: { content: [{ type: 'text', text: JSON.stringify(data) }] } });
+    }
+    if (tool === 'claim_check') {
+      const claim = typeof args.claim === 'string' ? args.claim : '';
+      const sources = Array.isArray(args.sources) ? args.sources.map(String) : [];
+      if (!claim.trim()) return json({ jsonrpc: '2.0', id, error: { code: -32602, message: 'claim required' } });
+      const [result] = await matchClaims([claim.trim()], sources);
+      return json({ jsonrpc: '2.0', id, result: { content: [{ type: 'text', text: JSON.stringify(result) }] } });
     }
     if (tool === 'corpus_search') {
       const rows = await getVerifiedCorpus(env, Number(args.limit) || 50);

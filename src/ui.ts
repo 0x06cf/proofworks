@@ -14,12 +14,12 @@ const PAGE = `<!DOCTYPE html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Proofworks - paste an AI answer and its sources, then verify each claim in plain view. Human-reviewed, no LLM in the judgment loop.">
+<meta name="description" content="Proofworks - a deterministic verification oracle: compute arithmetic, convert units, match claims against sources. A confidence ladder, no LLM grading an LLM.">
 <link rel="canonical" href="https://sentrylab.app/">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://sentrylab.app/">
-<meta property="og:title" content="Proofworks — verify what AI told you">
-<meta property="og:description" content="Paste an AI answer and its sources. Break it into claims, check each against the source, and mark what's true. Human-verified, open ledger.">
+<meta property="og:title" content="Proofworks — verify AI answers without AI">
+<meta property="og:description" content="Deterministic verification oracle. Computes arithmetic and checks claims against sources. certain · source-backed · unverifiable — never a fake yes.">
 <meta name="twitter:card" content="summary">
 <script type="application/ld+json">
 {
@@ -31,7 +31,7 @@ const PAGE = `<!DOCTYPE html>
   "publisher": { "@type": "Organization", "name": "Proofworks" }
 }
 </script>
-<title>Proofworks — verify what AI told you</title>
+<title>Proofworks — verify AI answers without AI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -119,12 +119,19 @@ const PAGE = `<!DOCTYPE html>
   .claim .meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;}
   .claim.supported{border-left-color:var(--ok);}
   .claim.unsupported{border-left-color:var(--bad);}
+  .claim.confirmed{border-left-color:#1a6bf0;}
+  .claim.refuted{border-left-color:#b23a2e;}
   .badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:3px 10px;border-radius:999px;}
   .badge::before{content:'';width:7px;height:7px;border-radius:50%;background:currentColor;opacity:.9;}
   .badge.supported{background:var(--okbg);color:var(--ok);}
   .badge.partial{background:var(--warnbg);color:var(--warn);}
   .badge.unsupported{background:var(--badbg);color:var(--bad);}
   .badge.no_source{background:#ececec;color:#5b5b5b;}
+  .badge.confirmed{background:#e4ecfd;color:#1a6bf0;}
+  .badge.refuted{background:var(--badbg);color:var(--bad);}
+  .badge.unverifiable{background:#f1eef2;color:#6b6b6b;}
+  .badge.flag{background:transparent;border:1px solid var(--line2);color:var(--muted);}
+  .badge.flag::before{content:'';width:0;height:0;}
   .src{font-size:12px;color:var(--accent);background:rgba(47,93,70,.08);padding:2px 8px;border-radius:6px;max-width:340px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .snippet{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.5;background:var(--bg2);border-radius:8px;padding:8px 10px;}
   .btn-row{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
@@ -174,37 +181,37 @@ const PAGE = `<!DOCTYPE html>
     <span class="mark">✓</span>
     <span style="display:flex;flex-direction:column;line-height:1.1;">
       <span>Proofworks</span>
-      <small>THE VERIFICATION LEDGER</small>
+      <small>DETERMINISTIC VERIFICATION ORACLE</small>
     </span>
   </div>
   <div class="right">
-    <span>No LLM in the judgment loop</span>
+    <span>No LLM grades this</span>
     <span>·</span>
-    <span>free preview</span>
+    <span>open API · MCP</span>
   </div>
 </header>
 
 <section class="hero">
   <div class="eyebrow">Don't trust it. Prove it.</div>
-  <h1 class="serif">AI told you something.<br>Put it on the <em>record.</em></h1>
-  <p class="sub">Paste any answer and the sources behind it. We break it into the claims it actually makes and show you, claim by claim, what the sources do — and don't — support. Then you decide.</p>
+  <h1 class="serif">AI told you something.<br>Verify it <em>without</em> AI.</h1>
+  <p class="sub">Proofworks is a deterministic verification oracle. It computes arithmetic, converts units, checks dates, and matches claims against real sources — returning an immediate verdict with a confidence ladder. No LLM grades an LLM here; computation and sources are the judge.</p>
   <div class="hero-actions">
-    <a class="btn primary" href="#checker">Check a claim</a>
-    <a class="btn ghost" href="#corpus-sec">See what's been verified</a>
+    <a class="btn primary" href="#checker">Verify an answer</a>
+    <a class="btn ghost" href="#corpus-sec">See what's been checked</a>
   </div>
-  <div class="trustline"><b>No LLM grades this.</b> Deterministic matching against real sources — your judgment, recorded.</div>
+  <div class="trustline"><b>Every verdict is trusted, or says it can't be.</b> <code>certain</code> · <code>source-backed</code> · <code>unverifiable</code> — never a fake yes.</div>
 </section>
 
 <section class="how">
-  <div class="step"><div class="n">01</div><h3>Paste</h3><p>Drop in the AI answer and the links it cited. Nothing is sent to an LLM for judgment.</p></div>
-  <div class="step"><div class="n">02</div><h3>Settle</h3><p>Proofworks splits it into claims and checks each against the sources you gave. Anything it can't trace gets flagged.</p></div>
-  <div class="step"><div class="n">03</div><h3>Confirm</h3><p>Mark each one verified or not. Your calls build the ledger other people — and agents — can trust.</p></div>
+  <div class="step"><div class="n">01</div><h3>Compute</h3><p>Arithmetic, ratios and dates are solved exactly — the model's number is either right or it's not, before any source is fetched.</p></div>
+  <div class="step"><div class="n">02</div><h3>Match</h3><p>Claims that aren't arithmetic are checked against the sources you supply, claim by claim, with a token-overlap confidence.</p></div>
+  <div class="step"><div class="n">03</div><h3>Admit</h3><p>Anything we can't compute or trace returns <code>unverifiable</code>. An oracle that admits its limits beats one that hallucinates certainty.</p></div>
 </section>
 
 <section class="checker" id="checker">
   <div class="card">
-    <h2 class="serif">Check an answer</h2>
-    <p class="note">Paste text, add sources, and we'll show you what's actually accounted for.</p>
+    <h2 class="serif">Verify an answer</h2>
+    <p class="note">Paste text and any sources. You get an immediate verdict per claim with a confidence ladder — <code>certain</code> (computed), <code>source-backed</code> (matched), or <code>unverifiable</code> (admitted).</p>
 
     <label for="ai">AI-generated text to verify</label>
     <textarea id="ai" rows="6" placeholder="e.g.  D1 costs $0.30 per 1M requests and reads are eventually consistent. The Workers runtime LTS is supported until 2027."></textarea>
@@ -225,7 +232,7 @@ const PAGE = `<!DOCTYPE html>
 <div class="checker" id="results" style="display:none;margin-top:24px;">
   <div class="card">
     <h2 class="serif">Verdict per claim</h2>
-    <p class="note">Tap <b>Verified</b>, <b>Rejected</b>, or <b>?</b> on each claim. Your call is the record.</p>
+    <p class="note">Deterministic results need no tap. For source-backed claims, tap <b>Verify</b>, <b>Reject</b>, or <b>?</b> to record a human call — it upgrades the corpus for other agents.</p>
     <div class="summary" id="summary"></div>
     <div id="claimlist"></div>
   </div>
@@ -279,24 +286,33 @@ $('#run').onclick=async()=>{
 function renderResults(data){
   const r=$('#results');r.style.display='block';
   const real=(data.claims||[]);
-  const counts={supported:0,partial:0,unsupported:0,no_source:0};
+  const counts={confirmed:0,refuted:0,supported:0,partial:0,unsupported:0,no_source:0,unverifiable:0};
   real.forEach(c=>{counts[c.verdict]=(counts[c.verdict]||0)+1;});
-  const order=[['supported','supported'],['partial','partially supported'],['unsupported','unmatched source'],['no_source','no source given']];
+  const order=[['confirmed','certain'],['refuted','refuted'],['supported','supported'],['partial','partially supported'],['unsupported','source mismatch'],['no_source','no source'],['unverifiable','unverifiable']];
   $('#summary').innerHTML=(order.filter(o=>counts[o[0]]>0).map(o=>
     '<div class="stat"><span class="lab">'+o[1]+'</span><span class="num">'+counts[o[0]]+'</span></div>').join(''))||'<div class="stat"><span class="lab">no claims</span><span class="num">0</span></div>';
 
   $('#claimlist').innerHTML=real.map((c,i)=>{
-    const badge='<span class="badge '+c.verdict+'">'+String(c.verdict).replace(/_/g,' ')+'</span>';
-    const useCls=(c.verdict==='supported')?'claim supported':(c.verdict==='partial')?'claim':'claim unsupported';
+    const confLabel=(c.confidence==='certain'&&c.computed&&c.computed.result)
+      ?' <span class="badge flag">⟦ <b>'+esc(String(c.computed.result))+'</b> ⟧</span>'
+      :(c.confidence?' <span class="badge flag">'+esc(c.confidence)+'</span>':'');
+    const badge='<span class="badge '+c.verdict+'">'+String(c.verdict).replace(/_/g,' ')+'</span>'+confLabel;
+    const useCls=['supported','confirmed'].includes(c.verdict)?('claim '+(c.verdict==='confirmed'?'confirmed':'supported'))
+      :(['partial','unverifiable','no_source'].includes(c.verdict)?'claim '+(c.verdict==='unverifiable'?'unverifiable':'')
+      :'claim refuted');
+    // 0.9.0: claims that are already 'certain' (confirmed/refuted) don't need a human jury button.
+    const juryRow=(c.verdict==='confirmed'||c.verdict==='refuted')
+      ?'<div class="meta"><span class="badge flag">deterministic — no human tap needed</span></div>'
+      : '<div class="btn-row" data-cid="'+c.id+'">'+
+          '<button class="btn juryok" data-act="confirmed">✓ Verify</button>'+
+          '<button class="btn jurybad" data-act="rejected">✗ Reject</button>'+
+          '<button class="btn ghost" data-act="flagged">? Flag</button>'+
+        '</div>';
     return '<div class="'+useCls+'">'+
       '<div class="txt">'+(i+1)+'. '+esc(c.claim_text)+'</div>'+
       '<div class="meta">'+badge+(c.source_url?'<span class="src">'+esc(c.source_url)+'</span>':'')+'</div>'+
       (c.source_snippet?'<div class="snippet">'+esc(c.source_snippet.slice(0,200))+'…</div>':'')+
-      '<div class="btn-row" data-cid="'+c.id+'">'+
-        '<button class="btn juryok" data-act="confirmed">✓ Verified</button>'+
-        '<button class="btn jurybad" data-act="rejected">✗ Rejected</button>'+
-        '<button class="btn ghost" data-act="flagged">? Questionable</button>'+
-      '</div></div>';
+      juryRow+'</div>';
   }).join('');
 }
 
