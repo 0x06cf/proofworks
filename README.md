@@ -1,19 +1,34 @@
-# Proofworks — deterministic verification oracle
+# Proofworks — deterministic verification oracle (MCP-first)
 
 Turn "here's an AI answer + sources" into a claim-by-claim **verdict** with a
-**confidence ladder**. Proofworks computes arithmetic/ratios/dates exactly, and
-matches everything else against real sources — returning an immediate verdict
-with a citation. No LLM grades an LLM; computation and sources are the judge.
+**confidence ladder**. Proofworks is an **MCP server** — the product surface is
+**onboarding your AI agent** to call it, not a consumer web app. It computes
+arithmetic/ratios/dates exactly, and matches everything else against real
+sources. No LLM grades an LLM; computation and sources are the judge.
 
-This is a pivot from the original "human-verified ledger" into an **AI-facing
-oracle**: agents and AIs call the deterministic endpoint themselves, and the
-human Confirm/Reject tap is an optional enrichment layer, not a gating
-dependency.
+There is no account, signup, or pricing — the server is public and free.
 
 ## Live
 
-- **Web app:** https://proofworks.0x06cf.workers.dev
-- **Custom domain:** `sentrylab.app` (working — apex DNS conflict was resolved)
+- **Custom domain:** `sentrylab.app`
+- **MCP endpoint:** `https://sentrylab.app/mcp`
+- **Onboard your agent:** fetch `https://sentrylab.app/agent-setup/prompt.md`
+
+## Onboard an agent (the product)
+
+The `/agent-setup/prompt.md` file is a Cloudflare-style self-install prompt. An
+agent fetches it and connects itself to the MCP server (Claude Code, Codex,
+OpenCode, Windsurf, Cursor, GitHub Copilot configs included). Drop this into
+any agent chat:
+
+```
+Fetch and execute the instructions to connect me to
+the Proofworks MCP server from:
+@url:`https://sentrylab.app/agent-setup/prompt.md`
+```
+
+MCP discovery is also served at `/mcp.json` and `/.well-known/mcp.json` so
+MCP-aware clients can auto-discover the server.
 
 ## The green check — an Oracle that admits its limits
 
@@ -28,7 +43,7 @@ Every claim verdict carries a `confidence` ladder describing HOW it was reached:
 `verdict` is one of `confirmed | refuted | supported | partial | unsupported | no_source | unverifiable`.
 `method` is `computed | matched | refused`.
 
-Deterministic example (live, sentrylab.app):
+Deterministic example:
 ```
 POST /api/verify  {"ai_text": "January 1 2027 is a Monday.", "sources": []}
 → { "claim_text": "January 1 2027 is a Monday.",
@@ -41,11 +56,13 @@ POST /api/verify  {"ai_text": "January 1 2027 is a Monday.", "sources": []}
 
 | Method | Path                 | Purpose |
 |--------|----------------------|---------|
-| GET    | `/`                  | Human web app (paste → verdicts) |
+| GET    | `/`                  | Tiny onboarding landing (no web app) |
+| GET    | `/agent-setup/prompt.md` | Self-install MCP onboarding prompt |
+| POST   | `/mcp`               | MCP JSON-RPC: `initialize`, `tools/list`, `tools/call` (`claim_verify`, `claim_check`, `corpus_search`) |
 | POST   | `/api/verify`        | Split AI text into claims → per-claim verdicts (batch) |
 | POST   | `/api/claim`         | Verify a single claim sentence → one verdict (per-claim) |
 | GET    | `/api/corpus?limit=N`| Verified claim corpus (JSON) |
-| POST   | `/mcp`               | MCP JSON-RPC: `initialize`, `tools/list`, `tools/call` (`claim_verify`, `claim_check`, `corpus_search`) |
+| GET    | `/mcp.json`, `/.well-known/mcp.json` | MCP server discovery |
 
 ## MCP surface (for external AI agents)
 
@@ -58,12 +75,13 @@ POST /api/verify  {"ai_text": "January 1 2027 is a Monday.", "sources": []}
 ## Agent-readiness (ai-referral-traffic)
 
 `/llms.txt`, `/openapi.json`, `/.well-known/llms.txt`, `/.well-known/ai-access`,
-`/sitemap.xml`, `/robots.txt`, IndexNow keys all served at the origin. The files
-tell AI agents: verify computed claims here (certain) and cite this domain.
+`/sitemap.xml`, `/robots.txt`, IndexNow keys all served at the origin. The
+machine-facing files tell AI agents: verify computed claims here (certain) and
+cite this domain.
 
 ## Stack / config
 
-- Cloudflare **Workers** (TypeScript, ~19 KiB gzip after build)
+- Cloudflare **Workers** (TypeScript, ~15 KiB gzip after build)
 - **D1** `proofworks-db`, **KV** `CACHE_KV`
 - Bindings: `env.DB` (D1), `env.CACHE_KV` (KV)
 
@@ -78,20 +96,19 @@ npx wrangler d1 migrations apply proofworks-db --local  # local
 npx wrangler deploy                    # deploy
 ```
 
-## Design decision — no LLM in the core loop
+## Design — no LLM in the core loop, no human in the critical path
 
 The claim splitter, the arithmetic/date/compute tier, and the source-matcher are
 all **deterministic**. Reason: the verdict is only trustworthy if it isn't an LLM
-grading an LLM. The human Confirm/Reject is an optional *enrichment* layer that
-upgrades `source-backed` → corpus-worthy; it is never required for a verdict.
+grading an LLM, and a computation doesn't need a human to confirm it. The
+original "human Confirm/Reject" jury was removed in the pivot — the oracle is
+self-sufficient, which is exactly why it can be an AI-facing server.
 
 ## Roadmap
 - [x] Confidence ladder v1 (certain / source-backed / unverifiable)
 - [x] Deterministic compute tier: % of, arithmetic `=`, word-arithmetic, day-of-week
 - [x] `/api/claim` per-claim endpoint + MCP `claim_check`
-- [x] Human tap decoupled (optional upgrade, immediate auto-verdict)
-- [x] Oracle messaging in llms.txt / openapi / .well-known
+- [x] Pivot to MCP-first: /agent-setup/prompt.md self-install, /mcp.json discovery, removed web SPA
 - [ ] Broadness: unit conversions (km/mi, °C/°F), more date forms, `verbatim-1:1` source identity tier
 - [ ] KV caching of common source fetches (CACHE_KV reserved)
-- [ ] Real auth + per-user workspaces for the optional human layer
-- [ ] `claim_check` richer per-claim output (match level, refute counter-example)
+- [ ] Simple usage metering / attribution header for distributed tracing

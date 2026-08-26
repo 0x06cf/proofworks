@@ -47,39 +47,16 @@ export async function createCheck(
   return { checkId, claimIds };
 }
 
-/** Record the human's verdict on a single claim. */
-export async function setClaimHumanVerdict(
-  env: Env,
-  claimId: number,
-  humanVerdict: 'confirmed' | 'rejected' | 'flagged',
-  verifiedBy?: string
-): Promise<void> {
-  await env.DB.prepare(
-    `UPDATE claims SET human_verdict = ?, verified_at = datetime('now'), verified_by = ?
-     WHERE id = ?`
-  ).bind(humanVerdict, verifiedBy ?? 'anonymous', claimId).run();
-  // touch parent check status
-  await env.DB.prepare(
-    `UPDATE checks SET updated_at = datetime('now') WHERE id = (SELECT check_id FROM claims WHERE id = ?)`
-  ).bind(claimId).run();
-}
-
-/** Wrap up a check once all claims are decided. */
-export async function finalizeCheck(env: Env, checkId: number, humanVerdict: string): Promise<void> {
-  await env.DB.prepare(`UPDATE checks SET status = ?, updated_at = datetime('now') WHERE id = ?`)
-    .bind(humanVerdict, checkId)
-    .run();
-}
-
-/** Pull the human-verified corpus for the AI/MCP surface. */
+/** Pull the verified claim corpus (deterministic + source-backed) for the AI/MCP surface. */
 export async function getVerifiedCorpus(env: Env, limit = 50): Promise<any[]> {
   const { results } = await env.DB.prepare(
-    `SELECT claim_text, claim_index, verdict, human_verdict, source_url, verified_at,
-            source_snippet,
-            CASE WHEN human_verdict = 'confirmed' THEN 'supported' ELSE verdict END AS final_verdict
+    `SELECT claim_text, claim_index, verdict, source_url,
+            source_snippet, confidence, method,
+            created_at AS verified_at,
+            verdict AS final_verdict
      FROM claims
-     WHERE human_verdict IS NOT NULL AND human_verdict != ''
-     ORDER BY verified_at DESC
+     WHERE verdict IN ('confirmed', 'refuted', 'supported', 'partial')
+     ORDER BY id DESC
      LIMIT ?`
   ).bind(limit).all();
   return results as any[];
