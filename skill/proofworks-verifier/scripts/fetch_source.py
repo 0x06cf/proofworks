@@ -53,13 +53,33 @@ def fetch(url: str, timeout: float = 15.0) -> str:
             return raw.decode("utf-8", errors="replace")
 
 
+# Anchor href extraction: capture <a href="...">text</a> before tag-stripping so
+# URLs survive into the text. They are the author's own citations — the mining
+# step depends on them. Keep absolute http(s) links (skip '#', 'mailto:', js:).
+ANCHOR = re.compile(r"<a[^>]*href=[\"'](https?://[^\"']+)[\"'][^>]*>(.*?)</a>",
+                    re.IGNORECASE | re.DOTALL)
+
+
 def strip_to_text(html_src: str) -> str:
-    """Turn an HTML document into readable plain text."""
-    text = STRIP_BLOCKS.sub(" ", html_src)  # drop script/style/noscript blocks
-    text = TAGS.sub(" ", text)              # drop remaining tags
-    text = html.unescape(text)              # &amp; -> &, &nbsp; -> \xa0, etc.
-    text = WHITESPACE.sub(" ", text)        # collapse horizontal whitespace
-    text = text.replace("\xa0", " ")        # nbsp -> space
+    """Turn an HTML document into readable plain text, preserving link URLs.
+
+    A bare href is dropped; an anchor becomes ``visible text (URL)`` so author
+    citations (commit links, footnotes, source URLs) survive into the text that
+    the presence pass and backfill-mine run against.
+    """
+    # 1. First, promote anchors: <a href="URL">text</a> -> "text (URL)".
+    def _anchor(m: re.Match) -> str:
+        href = m.group(1)
+        label = re.sub(r"<[^>]+>", " ", m.group(2))  # nested tags in label
+        label = re.sub(r"\s+", " ", label).strip()
+        return f"{label} ( {href} )" if label else href
+
+    text = ANCHOR.sub(_anchor, html_src)
+    text = STRIP_BLOCKS.sub(" ", text)  # drop script/style/noscript blocks
+    text = TAGS.sub(" ", text)          # drop remaining tags
+    text = html.unescape(text)          # &amp; -> &, &nbsp; -> \xa0, etc.
+    text = WHITESPACE.sub(" ", text)    # collapse horizontal whitespace
+    text = text.replace("\xa0", " ")    # nbsp -> space
     return BLANKS.sub("\n\n", text).strip()
 
 

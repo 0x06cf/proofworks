@@ -72,6 +72,19 @@ summarize a source from memory — read what the script prints. If a fetch fails
 (exit 1), tag that claim `unsupported` and note the fetch error; do not guess
 the content.
 
+Fetch resistance is real: `?format=TEXT`-style gitiles returns base64, some
+pages are JS-rendered, some are bot-blocked. When a plain fetch fails or returns
+garbage (base64, empty, a login page, an odd stub):
+- **gitiles/googlesource `?format=TEXT`** returns base64 — decode it, don't fetch
+  it as text. Prefer the rendered `+/ref/file` HTML view or the JSON API.
+- **JS-rendered or bot-blocked pages**: fall back to a **browser**. Launch an
+  isolated browser over CDP (a fresh profile you own, never the user's live
+  browser) and pull document text from the rendered page. Treat that as the
+  fetched source for steps 3–4.
+- Do **not** spend many turns path-guessing. If two attempts at a raw path fail,
+  get the page in a browser or move on; a threadburn of retries is worse than
+  tagging `unsupported` and backfilling from a reachable source.
+
 **3. Presence pass (deterministic).** For each claim, pipe the fetched source
 into `presence_match.py --claim "<the specific quote/number>"`. If `present:
 true`, the claim is `verified` on the literal passage — record the matched
@@ -97,6 +110,17 @@ credible source that does support the claim **as written**, fetch it with
 `fetch_source.py`, and re-run steps 3–4 on it. If it now verifies, tag
 `verified` and ADD the new source to the citation. If the second source also
 fails, tag `exhausted`.
+
+**Before searching externally, mine the source you already have.** A claim is
+often pinned by a citation *inside* the page — a linked URL, a "see also"
+footnote, a `cve-XXXX-XXXX` id, a commit hash, an underscore/@-handle, or a
+plain link the author gives as the basis for the assertion. Grep the fetched
+text for `http`, `.md`, `+/`, commit hashes, and `cve-`/reference ids. If a
+supporting reference is named, fetch and presence-check *that* source directly —
+it is the author's own citation and the most reliable one available. Do this
+*before* turning to web search. Failing to look is how a claim gets tagged
+`unsupported` when the answer was already in hand (the class of miss where the
+user has to point at the linked commit and say "it does though").
 
 Backfill is **source-finding only — never claim-rewriting.** It finds a source to
 support the claim exactly as stated. If no source supports the claim as written,
@@ -133,6 +157,11 @@ reference list.
 - **`exhausted` is a real outcome.** After two independent sources fail to back
   a claim, report it as unsupported. Do not keep hunting to force a green check,
   and do not soften the wording to make it pass.
+- **Search can be saturated.** If web search returns empty/degraded results
+  during backfill, do not keep retrying the same query. Go **direct to likely
+  primary sources** — the author's own site, the repo/commit the claim points at,
+  an official doc/library — and fetch those instead. Saturation is a signal to
+  stop relying on the index and start fetching known fingerprints.
 - **Do not launder a claim through memory.** The semantic pass and backfill must
   not rewrite a claim to what you already believe and then "verify" the rewrite.
   Judge and source the claim exactly as written; flag proposed corrections

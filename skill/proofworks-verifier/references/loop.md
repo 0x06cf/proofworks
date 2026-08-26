@@ -52,10 +52,18 @@ Build a list of claims from the draft. One file per job:
                      v
              4. backfill: find 1 extra source (claim as written)
                      │
+   ┌─────────────────┼───────────────────────┐
+   │ 4a mine fetched  │ 4b search / fetch     │
+   │ source for its   │ likely primary source │
+   │ own citations /  │ (go direct if search  │
+   │ links/commit ids │ is saturated)         │
+   └────────┬─────────┴───────────┬───────────┘
+            └─────────┬───────────┘
+                      │
           fetch + re-run 2–3 ──pass──► verified  (ADD new source to citation)
-                     │
-                    fail
-                     v
+                      │
+                     fail
+                      v
             unsupported / exhausted
 ```
 
@@ -67,6 +75,11 @@ Build a list of claims from the draft. One file per job:
   `unsupported` — not a corrected fact.
 - **Backfill never rewrites the claim.** It finds a source for the claim exactly
   as stated. If no source backs it, do not change the claim to fit one.
+- **Mine the source before searching.** Before stepping out to web search, check
+  the already-fetched source text for its own citations — URLs, commit hashes,
+  `cve-` id, "see also" links. The author's own reference is the most reliable
+  backfill. Skipping this is how a claim is mis-tagged `unsupported` when the
+  pinned reference was already in hand.
 - **Corrections are surfaced, not absorbed.** If the draft's fact is wrong (e.g.
   "Eiffel Tower is in Miami"), leave the claim tagged `unsupported`. Optionally
   emit a `correction` field naming the corrected fact and letting the user decide.

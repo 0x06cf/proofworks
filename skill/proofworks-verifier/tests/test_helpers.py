@@ -102,6 +102,40 @@ def test_fetch_source_rejects_non_http():
     assert proc.returncode == 1, "non-http url must exit 1"
 
 
+def test_strip_to_text_preserves_anchor_urls():
+    # Author citations (commit links, footnotes, source URLs) must survive into
+    # the stripped text so the backfill-mine step can find them. Regression for
+    # the real miss where a quoted commit URL was deleted by tag-stripping.
+    from importlib import util
+    spec = util.spec_from_file_location("fs", os.path.join(SCRIPTS, "fetch_source.py"))
+    fs = util.module_from_spec(spec)
+    spec.loader.exec_module(fs)
+
+    html = (
+        '<p>OlyB found this commit '
+        '<a href="https://chromium.googlesource.com/chromiumos/platform/ec/+/abc123">'
+        "cr50: add fwmp wp policy</a>"
+        " in the codebase. It is important.</p>"
+    )
+    text = fs.strip_to_text(html)
+    assert "https://chromium.googlesource.com/chromiumos/platform/ec/+/abc123" in text, (
+        "anchor href must survive strip_to_text"
+    )
+    assert "fwmp wp policy" in text, "anchor label must survive"
+
+
+def test_strip_to_text_drops_bare_url_as_plain_tag():
+    # A bare <a> with no http(s) href should not leak into the text as noise.
+    from importlib import util
+    spec = util.spec_from_file_location("fs", os.path.join(SCRIPTS, "fetch_source.py"))
+    fs = util.module_from_spec(spec)
+    spec.loader.exec_module(fs)
+
+    text = fs.strip_to_text('<p>See <a href="#local-anchor">the section</a>.</p>')
+    assert "#local-anchor" not in text, "fragment hrefs should not be kept as URLs"
+    assert "the section" in text, "anchor label text persists"
+
+
 def main() -> int:
     tests = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
     failures = 0
