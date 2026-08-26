@@ -102,6 +102,7 @@ h1 .ok{color:var(--certain)}
 .verdict{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:9px;background:#fbfbfb;box-shadow:var(--line) 0 0 0 1px}
 .verdict .sym{font-family:'Geist Mono',monospace;font-weight:600;font-size:15px;line-height:1.4;width:20px;text-align:center}
 .verdict .txt{flex:1;font-size:14px;line-height:1.45;color:var(--ink)}
+.verdict .passage{display:block;margin-top:6px;font-family:'Geist Mono',monospace;font-size:12.5px;line-height:1.5;color:var(--ink2);background:#f3f4f6;border-left:2px solid var(--line);padding:6px 10px;border-radius:0 6px 6px 0}
 .verdict .tag{font-family:'Geist Mono',monospace;font-size:11px;font-weight:500;padding:2px 8px;border-radius:999px;white-space:nowrap;margin-top:1px}
 .v-certain .sym,.v-certain .tag{color:var(--certain);border-color:rgba(18,128,92,.35)}
 .v-certain{background:var(--certain-bg)}
@@ -184,7 +185,7 @@ pre.code .fn{color:#f0a0a0}
 .res .kicker{justify-content:center;margin-bottom:10px}
 .res h2{text-align:center}
 .res-sub{text-align:center;color:var(--ink2);max-width:560px;margin:14px auto 0;font-size:15px;line-height:1.6}
-.res-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;max-width:980px;margin:36px auto 0}
+.res-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;max-width:820px;margin:36px auto 0}
 .res-card{display:flex;flex-direction:column;gap:8px;background:#fff;border-radius:12px;padding:20px;box-shadow:var(--ring) 0 0 0 1px;transition:box-shadow .15s}
 .res-card:hover{box-shadow:0 4px 20px -10px rgba(0,0,0,.25)}
 .res-card .rt{font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.08em;color:var(--source);text-transform:uppercase}
@@ -287,26 +288,26 @@ footer a:hover{color:var(--ink)}
     <!-- live verdict demo -->
     <div class="demo" id="demo">
       <div class="demo-card">
-        <div class="demo-head">
-          <span class="cir"></span><span class="cir"></span><span class="cir"></span>
-          <span class="title">proofworks skill — a claim, checked against its source</span>
-        </div>
-        <div class="demo-body demo-static">
-          <div class="demo-row">
-            <div class="demo-q">"Cloudflare's D1 gives you a serverless SQL database."<span class="src">← cited · developers.cloudflare.com/d1</span></div>
-            <div class="verdict v-source"><span class="sym">✓</span><span class="txt">verified — the exact phrase is found in the fetched page</span><span class="tag">verified</span></div>
-          </div>
-          <div class="demo-row">
-            <div class="demo-q">"D1 charges 5¢ per million rows read."<span class="src">← cited · developers.cloudflare.com/d1/pricing</span></div>
-            <div class="verdict v-refuted"><span class="sym">✗</span><span class="txt">not in the source — the pricing page lists <b>$0.001</b>/million rows read, not 5¢, so the skill suggests that correction instead</span><span class="tag">unsupported · correction</span></div>
-          </div>
-          <div class="demo-row">
-            <div class="demo-q">"The Eiffel Tower is in Miami."<span class="src">← no source cited</span></div>
-            <div class="verdict v-unver"><span class="sym">—</span><span class="txt">no computation, no source → <b>unverifiable</b>. It won't confirm from memory, but flags the likely correction so you can check it.</span><span class="tag">correction suggested</span></div>
-          </div>
-        </div>
-      </div>
-      <div class="demo-hint">Real output the skill produces. It fetches the cited source, checks the claim against it, and says why — it does <b>not</b> run open research or rewrite your claims.</div>
+              <div class="demo-head">
+                <span class="cir"></span><span class="cir"></span><span class="cir"></span>
+                <span class="title">proofworks skill — real run, three claims checked against live sources</span>
+              </div>
+              <div class="demo-body demo-static">
+                <div class="demo-row">
+                  <div class="demo-q">Claim: "Cloudflare's D1 gives you a serverless SQL database."<span class="src">cited → developers.cloudflare.com/d1</span></div>
+                  <div class="verdict v-source"><span class="sym">✓</span><span class="txt"><b>verified</b> — "serverless SQL database" appears in the fetched page: <span class="passage">"Create new <b>serverless SQL databases</b> to query from your Workers and Pages projects."</span></span><span class="tag">verified</span></div>
+                </div>
+                <div class="demo-row">
+                  <div class="demo-q">Claim: "D1 charges 5¢ per million rows read."<span class="src">cited → developers.cloudflare.com/d1/pricing</span></div>
+                  <div class="verdict v-refuted"><span class="sym">✗</span><span class="txt"><b>unsupported</b> — the pricing page lists <b>$0.001</b>/million rows read, not 5¢, so the skill suggests that correction instead</span><span class="tag">unsupported · correction</span></div>
+                </div>
+                <div class="demo-row">
+                  <div class="demo-q">Claim: "The Eiffel Tower is in Miami."<span class="src">no source cited</span></div>
+                  <div class="verdict v-unver"><span class="sym">—</span><span class="txt"><b>unverifiable</b> — no source to check, so it won't confirm from memory; it flags the likely correction (Paris) for you to verify</span><span class="tag">unverifiable · correction</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="demo-hint">A real run captured from the skill. It fetches each cited source, checks the claim against it, and shows the passage that backs (or contradicts) it — including the correction it suggests, which you still decide.</div>
     </div>
   </div>
 </section>
@@ -499,11 +500,6 @@ BODY  <span class="st" style="color:#85d39d">{"claim": "Jan 1 2027 is a Monday",
         <div class="rt">SPEC</div><h3>robots.txt</h3>
         <p>Crawler policy: what indexers may read and cite. Plain text.</p>
         <span class="mono">/robots.txt</span>
-      </a>
-      <a class="res-card" href="https://github.com/0x06cf/proofworks" target="_blank" rel="noopener">
-        <div class="rt">CODE</div><h3>Source</h3>
-        <p>The whole thing is open source. Self-host it if you want.</p>
-        <span class="mono">github.com/0x06cf/proofworks</span>
       </a>
     </div>
   </div>
