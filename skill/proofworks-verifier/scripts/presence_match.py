@@ -27,6 +27,11 @@ import sys
 MIN_FRAGMENT = 4
 # How many characters of the probe to treat as "the distinctive quote" window.
 PROBE_WINDOW = min(180, 80)
+# Tokens too common to be proof of a specific quote. A fragment that is ONLY
+# these (e.g. "at the", "of a") matches every page and must not count as evidence.
+STOPWORDS = set("""a an the this that these those on in at of to for from with
+and or but by as per is are was were it its be do does can will what when where
+how about into over under up down out off there here than then them they of""".split())
 
 
 def normalize(s: str) -> str:
@@ -38,15 +43,35 @@ def normalize(s: str) -> str:
     return s.strip()
 
 
+def is_distinctive(frag: str) -> bool:
+    """A fragment is evidence only if it carries content beyond stopwords.
+
+    A bare stopword run ("at the", "of a") matches nearly any page, so it cannot
+    prove the specific quote is present. Fragments with a number always count
+    (numbers are the highest-value checks)."
+    """
+    norm = normalize(frag)
+    if not norm:
+        return False
+    tokens = norm.split()
+    if not tokens:
+        return False
+    # A number anywhere makes it distinctive ("5 billion", "1,248.60").
+    if any(re.search(r"\d", t) for t in tokens):
+        return True
+    non_stop = [t for t in tokens if t not in STOPWORDS]
+    # Need at least 2 content tokens, or one longer-than-average word.
+    return len(non_stop) >= 2 or any(len(t) >= 5 for t in non_stop)
+
+
 def distinctive_substrings(claim: str, window: int = PROBE_WINDOW):
     """Yield candidate strings from the claim to look for, longest first.
 
-    We prefer the longest runs of 2+ words as the strongest evidence, but fall
-    back progressively so a long quoted sentence still anchors on a fragment.
+    We prefer the longest runs of content words as the strongest evidence, but
+    fall back progressively so a long quoted sentence still anchors on a
+    fragment. Both stopword-only and impossibly short fragments are skipped.
     Numbers are kept (they're the highest-value checks — '1,248.60').
     """
-    # Force commas into a checkable form (strip thousands separators) so both
-    # "1,248.60" and "1248.60" in the claim match "1248.60" in the source.
     variants = [claim, claim.replace(",", "")]
     seen = set()
     for v in variants:
@@ -57,7 +82,11 @@ def distinctive_substrings(claim: str, window: int = PROBE_WINDOW):
             for i in range(len(words) - n + 1):
                 frag = " ".join(words[i : i + n])
                 norm = normalize(frag)
-                if len(norm) >= MIN_FRAGMENT and norm not in seen:
+                if (
+                    len(norm) >= MIN_FRAGMENT
+                    and is_distinctive(frag)
+                    and norm not in seen
+                ):
                     seen.add(norm)
                     yield norm
 

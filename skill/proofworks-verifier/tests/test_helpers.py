@@ -69,6 +69,29 @@ def test_short_generic_probe_reports_absent_with_fragment():
     assert out[0]["matched_fragment"] == "d1", out
 
 
+def test_stopword_only_fragment_is_not_evidence():
+    # "at the" / "of a" appear in nearly any page. A claim whose only present
+    # fragment is a stopword run must NOT be treated as verified (false positive).
+    out = run_presence(
+        "Pricing starts at the free tier. Commands run at the edge.",
+        ["execute queries at the edge"],
+    )
+    assert out[0]["present"] is False, (
+        "must not match on a bare stopword run (e.g. 'at the')"
+    )
+
+
+def test_content_fragment_matches_despite_stopwords():
+    # A claim that shares a real content phrase with the source DOES verify,
+    # even when wrapped in stopwords.
+    out = run_presence(
+        "Students of a quiet school attend daily.",
+        ["students of the school"],
+    )
+    assert out[0]["present"] is True, out
+    assert "students" in out[0]["matched_fragment"], out
+
+
 def test_fetch_source_rejects_non_http():
     cmd = [
         sys.executable,
