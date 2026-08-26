@@ -303,7 +303,7 @@ footer a:hover{color:var(--ink)}
           </div>
           <div class="demo-row">
             <div class="demo-q">"The Eiffel Tower is in Miami."<span class="src">← no source cited</span></div>
-            <div class="verdict v-unver"><span class="sym">—</span><span class="txt">no computation, no source → honest refusal</span><span class="tag">unverifiable</span></div>
+            <div class="verdict v-unver"><span class="sym">—</span><span class="txt">no computation, no source → <b>unverifiable</b>. It won't confirm from memory, but flags the likely correction so you can check it.</span><span class="tag">correction suggested</span></div>
           </div>
         </div>
       </div>
@@ -337,7 +337,7 @@ footer a:hover{color:var(--ink)}
         <span class="lvl">Unverifiable · refused</span>
         <h3>It won't fake confidence</h3>
         <p>No source, no computation, no claim. The honest answer is <b>unverifiable</b>, never a confident guess.</p>
-        <div class="eg">"The Eiffel Tower is in Miami"<br><span class="no">— unverifiable</span>, no source</div>
+        <div class="eg">"The Eiffel Tower is in Miami"<br><span class="no">— unverifiable</span>, no source · flags a correction to check</div>
       </div>
     </div>
   </div>
