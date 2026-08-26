@@ -202,23 +202,7 @@ pre.code .fn{color:#f0a0a0}
 .faq details[open] summary::after{content:'−'}
 .faq .ans{padding:0 0 20px;color:var(--ink2);font-size:15px;line-height:1.65}
 
-/* ---------- CTA + footer ---------- */
-.cta-band{background:#0b0d10;color:#fff;text-align:center;padding:96px 24px;position:relative;overflow:hidden}
-.cta-band::before{content:'';position:absolute;inset:auto 0 0 0;height:220px;background:radial-gradient(560px 200px at 50% 100%, rgba(10,114,239,.18), transparent 70%)}
-.cta-band h2{color:#fff;font-size:clamp(30px,5vw,48px);letter-spacing:-.03em}
-.cta-band p{color:#a4adb8;max-width:520px;margin:16px auto 30px;font-size:17px}
-.cta-band .btn{background:#fff;color:var(--ink)}
-.cta-band .btn.ghost{background:transparent;color:#fff;box-shadow:0 0 0 1px #2a313a}
-.cta-band .btn.ghost:hover{background:#151a20}
-.cta-band pre{max-width:560px;margin:0 auto;text-align:left;background:#0f1216;border:1px solid #1f262e;border-radius:10px;padding:14px 16px;font-size:12.5px;color:#a4adb8;line-height:1.6;overflow-x:auto}
-.paste-box{max-width:560px;margin:18px auto 0;text-align:left;border-radius:10px;overflow:hidden;box-shadow:0 12px 40px -24px rgba(0,0,0,.6)}
-.paste-bar{display:flex;align-items:center;justify-content:space-between;background:#14181d;border:1px solid #1f262e;border-bottom:none;padding:9px 12px;border-radius:10px 10px 0 0}
-.paste-bar span{font-family:'Geist Mono',monospace;font-size:11.5px;color:#8f99a4}
-.paste-bar button{background:#1e242b;color:#c9d1d9;border:1px solid #2a313a;font-size:11.5px;font-family:'Geist Mono',monospace;border-radius:6px;padding:4px 10px;cursor:pointer}
-.paste-bar button:hover{background:#262d36;color:#fff}
-.paste-box pre{margin:0;border-radius:0 0 10px 10px;border-top:none;max-width:none}
-.cta-band .status{margin-top:26px;font-family:'Geist Mono',monospace;font-size:12.5px;color:#8f99a4;display:flex;justify-content:center;gap:8px;align-items:center;flex-wrap:wrap}
-.cta-band .status .dot{width:7px;height:7px;border-radius:50%;background:var(--certain);display:inline-block;margin-right:4px}
+/* ---------- footer ---------- */
 footer{padding:60px 0 40px;background:#fff;border-top:1px solid var(--line)}
 .foot-grid{max-width:1120px;margin:0 auto;padding:0 24px;display:grid;grid-template-columns:repeat(4,1fr);gap:32px}
 footer h4{font-size:13px;font-weight:600;letter-spacing:.02em;margin-bottom:14px}
@@ -228,6 +212,7 @@ footer a{color:var(--ink2);font-size:14px}
 footer a:hover{color:var(--ink)}
 .foot-bottom{max-width:1120px;margin:26px auto 0;padding:20px 24px 0;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;color:var(--ink3);font-size:13px}
 .foot-bottom .legal{display:flex;gap:20px}
+.foot-bottom .legal-note{font-family:'Geist Mono',monospace;font-size:12px;color:var(--ink3)}
 .foot-bottom a{color:var(--ink3);font-size:13px}
 
 @media(max-width:900px){
@@ -266,7 +251,7 @@ footer a:hover{color:var(--ink)}
     </div>
     <div class="nav-cta">
       <a class="btn ghost" href="#resources">Docs</a>
-      <a class="btn" href="#install">Onboard an agent</a>
+      <a class="btn" href="#integrations">Onboard an agent</a>
     </div>
   </div>
 </nav>
@@ -278,7 +263,7 @@ footer a:hover{color:var(--ink)}
     <h1>Don't let the agent hand you <span class="strike">citations it never checked</span><br>make it <span class="ok">prove</span> its sources.</h1>
     <p class="hero-sub">Proofworks is a research tool for AI agents: it gathers sources, cites them, then <b>checks its own work</b> — confirming each citation actually supports the claim before you trust the answer. <a href="#offer">Arithmetic and dates are computed</a>. Everything else is matched to a real source. What can't be proven is marked <b class="mono" style="color:var(--unver)">unverifiable</b>, not passed off as fact.</p>
     <div class="hero-cta">
-      <a class="btn" href="#install">Onboard your agent</a>
+      <a class="btn" href="#integrations">Onboard your agent</a>
       <a class="btn ghost" href="#demo" id="tryInline">See a verified answer</a>
       <div class="note">No account, no API key, no hosted server — it runs on your own agent and your own model.</div>
     </div>
@@ -503,24 +488,6 @@ BODY  <span class="st" style="color:#85d39d">{"claim": "Jan 1 2027 is a Monday",
   </div>
 </section>
 
-<!-- CTA -->
-<section class="cta-band" id="install">
-  <h2>Give your agent a proofreader for its citations.</h2>
-  <p>Paste the setup prompt into any agent chat. It connects itself, then verifies every source before it hands you an answer.</p>
-  <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;position:relative;z-index:2">
-    <a class="btn" href="${ORIGIN}/agent-setup/prompt.md">Read the setup prompt</a>
-    <a class="btn ghost" href="https://github.com/0x06cf/proofworks" target="_blank" rel="noopener">View the repo</a>
-  </div>
-  <div class="paste-box">
-    <div class="paste-bar">
-      <span>&lt;paste this into your agent&gt;</span>
-      <button id="copyPrompt">Copy</button>
-    </div>
-    <pre>Fetch and execute the setup instructions for the<br>Proofworks skill from @url:\`${ORIGIN}/agent-setup/prompt.md\`</pre>
-  </div>
-  <div class="status"><span class="dot"></span>open source&nbsp;·&nbsp;MIT&nbsp;·&nbsp;runs locally on your agent</div>
-</section>
-
 <!-- FOOTER -->
 <footer>
   <div class="foot-grid">
@@ -542,7 +509,8 @@ BODY  <span class="st" style="color:#85d39d">{"claim": "Jan 1 2027 is a Monday",
     </div>
   </div>
   <div class="foot-bottom">
-    <span>© 2026 <b>Proofworks</b>. A research skill that verifies its own citations.</span>
+    <span>© 2026 <a class="brand" href="${ORIGIN}/"><span class="mark">✓</span>Proofworks</a></span>
+    <span class="legal-note">open source · MIT · runs locally on your agent</span>
     <div class="legal"><a href="#offer">About</a><a href="#faq">FAQ</a><a href="https://github.com/0x06cf/proofworks" target="_blank" rel="noopener">GitHub</a></div>
   </div>
 </footer>
@@ -552,18 +520,9 @@ BODY  <span class="st" style="color:#85d39d">{"claim": "Jan 1 2027 is a Monday",
   var ORIG='${ORIGIN}';
 
   // ---- copy the skill setup prompt ----
-    var skillBtn=document.getElementById('copySkill');
-    if(skillBtn)skillBtn.addEventListener('click',function(){
-      var txt=document.getElementById('skillPrompt').textContent.trim();
-      navigator.clipboard.writeText(txt).then(function(){
-        var b=this; b.textContent='Copied ✓'; setTimeout(function(){b.textContent='Copy';},1200);
-      }.bind(this)).catch(function(){});
-    });
-
-  // ---- CTA copy-paste prompt ----
-  var cpBtn=document.getElementById('copyPrompt');
-  if(cpBtn)cpBtn.addEventListener('click',function(){
-    var txt=document.querySelector('.paste-box pre').innerText.replace(/\\n\\s*/g,' ').trim();
+  var skillBtn=document.getElementById('copySkill');
+  if(skillBtn)skillBtn.addEventListener('click',function(){
+    var txt=document.getElementById('skillPrompt').textContent.trim();
     navigator.clipboard.writeText(txt).then(function(){
       var b=this; b.textContent='Copied ✓'; setTimeout(function(){b.textContent='Copy';},1200);
     }.bind(this)).catch(function(){});
